@@ -1,0 +1,8 @@
+{
+  "name": "react-jss-theme",
+  "dependencies": {},
+  "globalDependencies": {
+    "object-assign": "registry:dt/object-assign#4.0.1+20160316155526",
+    "react": "registry:dt/react#0.14.0+20160817201227"
+  }
+}

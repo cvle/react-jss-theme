@@ -1,0 +1,33 @@
+{
+  "name": "react-jss-theme",
+  "version": "0.0.1",
+  "description": "Theme solution for React based on jss",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "scripts": {
+    "prepublish": "npm run typings && npm build",
+    "typings": "typings install",
+    "build": "gulp",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "jss",
+    "theme",
+    "react"
+  ],
+  "peerDependencies": {
+    "react": ">=0.14"
+  },
+  "author": "Chi Vinh Le",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.6",
+    "jss": "^5.4.0",
+    "merge2": "^1.0.2",
+    "object-assign": "^4.1.0",
+    "react": "~0.14.0",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.2"
+  }
+}
