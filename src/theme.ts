@@ -1,11 +1,24 @@
+/*
+ * Copyright (C) 2016 wikiwi.io
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license. See the LICENSE file for details.
+ */
+
 import * as jss from "jss";
 import JSSAPI from "jss";
 
+/**
+ * Renderer is an interface to a stylesheet renderer.
+ */
 interface Renderer {
   attach(sheet: ManagedStyleSheet<any>): void;
   detach(sheet: ManagedStyleSheet<any>): void;
 }
 
+/**
+ * DOMRenderer renders stylesheets to the DOM using priority based rendering.
+ */
 class DOMRenderer {
   private map: { [priority:number]:HTMLStyleElement; };
   private sortedPriorities: Array<number>;
@@ -63,6 +76,10 @@ class DOMRenderer {
   }
 }
 
+/**
+ * ManagedStyleSheet takes care of reference counting and calling out to the renderer.
+ * Additionally it associates a priority number with a styleSheet.
+ */
 class ManagedStyleSheet<T> {
   private sheet: jss.StyleSheet;
   private references: Array<StyleSheetReference<any>>;
@@ -113,6 +130,9 @@ class ManagedStyleSheet<T> {
   };
 }
 
+/**
+ * StyleSheetReference holds a reference to a stylesheet.
+ */
 export interface StyleSheetReference<T> {
   classes: T;
   release(): void;
@@ -135,6 +155,16 @@ class StyleSheetReferenceImpl<T> implements StyleSheetReference<T> {
   };
 }
 
+/**
+ * Theme is a collection of registered stylesheets.
+ *
+ * A stylesheet can be required from the theme returning a StyleSheetReference,
+ * causing the StyleSheet to be rendered to the DOM. Releasing all references to a StyleSheet,
+ * will remove the StyleSheet from the DOM.
+ *
+ * The stylesheets will be rendered according to the order they were
+ * registered to the Theme, allowing indirect prioritizing of stylesheets.
+ */
 export class Theme {
   private inUse: boolean;
   private sheets: { [name:string]:ManagedStyleSheet<any>; };

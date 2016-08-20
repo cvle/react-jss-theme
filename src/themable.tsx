@@ -1,17 +1,38 @@
+/*
+ * Copyright (C) 2016 wikiwi.io
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license. See the LICENSE file for details.
+ */
+
 import * as React from "react";
 import objectAssign = require("object-assign");
 
 import { Theme, StyleSheetReference } from "./theme";
 
+/** Context is an interface of the context passed by themeprovider */
 export interface Context {
   theme: Theme;
 }
 
-export interface ThemableProps<T> {
-  classes?: T;
+/**
+ * ThemableProps is an interface for the properties passed by the
+ * Themable HOC to the target Component
+ */
+export interface ThemableProps {
+  /** classes contains the css classes from the Theme */
+  classes?: {[name:string]:string};
 }
 
-export function makeThemable<T extends ThemableProps<any>>(TargetComponent: React.ComponentClass<T>, propName: string, defaultStyleNames = ""): React.ComponentClass<T> {
+
+/**
+ * makeThemable wraps component with a HOC providing theming capabilities.
+ *
+ * @param TargetComponent  The target component to make themable.
+ * @param propName         The name of the property containing a list of styles to fetch from the theme.
+ * @param defaultStyleName The default style to fetch from the theme.
+ */
+export function makeThemable<T extends ThemableProps>(TargetComponent: React.ComponentClass<T>, propName: string, defaultStyleNames = ""): React.ComponentClass<T> {
     let enhanced = class extends React.Component<T, void> {
       context: Context;
 
@@ -27,6 +48,7 @@ export function makeThemable<T extends ThemableProps<any>>(TargetComponent: Reac
         if (!this.context.theme) {
           return;
         }
+        // TODO: process a list of style names.
         let styleName = this.props[propName];
         if (!styleName) {
           styleName = defaultStyleNames;
@@ -62,7 +84,10 @@ export function makeThemable<T extends ThemableProps<any>>(TargetComponent: Reac
     return enhanced;
 }
 
-export function Themable<T extends ThemableProps<any>>(propName: string, defaultStyleNames = ""): (target: React.ComponentClass<T>) => any {
+/**
+ * Themable calls makeThemable but has a Decorator signature.
+ */
+export function Themable<T extends ThemableProps>(propName: string, defaultStyleNames = ""): (target: React.ComponentClass<T>) => any {
   return (target: React.ComponentClass<T>) => {
     return makeThemable(target, propName, defaultStyleNames);
   };
