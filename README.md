@@ -16,7 +16,7 @@ WIP: This is still a prototype.
       },
       header: {
         container: {
-          olor: "#000",
+          color: "#000",
         },
       },
     });
