@@ -5,10 +5,10 @@
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
   "scripts": {
-    "prepublish": "npm run typings && npm build",
+    "prepublish": "npm run clean && npm run typings && npm run build",
     "typings": "typings install",
     "build": "gulp",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist typings"
   },
   "keywords": [
     "jss",
