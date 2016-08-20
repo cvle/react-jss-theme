@@ -158,9 +158,9 @@ class StyleSheetReferenceImpl<T> implements StyleSheetReference<T> {
 /**
  * Theme is a collection of registered stylesheets.
  *
- * A stylesheet can be required from the theme returning a StyleSheetReference,
- * causing the StyleSheet to be rendered to the DOM. Releasing all references to a StyleSheet,
- * will remove the StyleSheet from the DOM.
+ * A stylesheet can be required from the theme returning a stylesheetReference,
+ * causing the stylesheet to be rendered to the DOM. Releasing all references to a stylesheet,
+ * will remove the stylesheet from the DOM.
  *
  * The stylesheets will be rendered according to the order they were
  * registered to the Theme, allowing indirect prioritizing of stylesheets.
