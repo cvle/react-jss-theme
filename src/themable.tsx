@@ -21,7 +21,7 @@ export interface Context {
  */
 export interface ThemableProps {
   /** classes contains the css classes from the Theme */
-  classes?: {[name:string]:string};
+  classes?: any;
 }
 
 
