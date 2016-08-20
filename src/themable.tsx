@@ -53,11 +53,12 @@ export function makeThemable<T extends ThemableProps<any>>(TargetComponent: Reac
         }
         return <TargetComponent {...props} />;
       }
-    };
+    } as React.ComponentClass<T>;
     // Add expected context type to receive the context.
-    (enhanced as any).contextTypes = {
+    enhanced.contextTypes = {
       theme: React.PropTypes.object,
     };
+    enhanced.displayName = "Themable";
     return enhanced;
 }
 
