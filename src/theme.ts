@@ -12,8 +12,8 @@ import JSSAPI from "jss";
  * Renderer is an interface to a stylesheet renderer.
  */
 interface Renderer {
-  attach(sheet: ManagedStyleSheet<any>): void;
-  detach(sheet: ManagedStyleSheet<any>): void;
+  attach(sheet: ManagedStyleSheet): void;
+  detach(sheet: ManagedStyleSheet): void;
 }
 
 /**
@@ -39,7 +39,7 @@ class DOMRenderer {
     return null;
   }
 
-  attach(managed: ManagedStyleSheet<any>) {
+  attach(managed: ManagedStyleSheet) {
     const priority = managed.getPriority();
     if (this.map[priority] !== undefined) {
       throw new Error(`Attaching StyleSheet '${managed.getName()}' that is already rendered.`);
@@ -63,7 +63,7 @@ class DOMRenderer {
     this.sortedPriorities = this.sortedPriorities.sort((n1, n2) => n1 - n2);
   }
 
-  detach(managed: ManagedStyleSheet<any>) {
+  detach(managed: ManagedStyleSheet) {
     const priority = managed.getPriority();
     if (this.map[priority] === undefined) {
       throw new Error(`Detaching unavailable StyleSheet '${managed.getName()}'.`);
@@ -80,21 +80,21 @@ class DOMRenderer {
  * ManagedStyleSheet takes care of reference counting and calling out to the renderer.
  * Additionally it associates a priority number with a styleSheet.
  */
-class ManagedStyleSheet<T> {
+class ManagedStyleSheet {
   private sheet: jss.StyleSheet;
-  private references: Array<StyleSheetReference<any>>;
+  private references: Array<StyleSheetReference>;
   private priority: number;
   private renderer: Renderer;
   private name: string;
 
-  constructor(name: string, rules: T, priority: number, renderer: Renderer) {
+  constructor(name: string, rules: jss.RulesType, priority: number, renderer: Renderer) {
     this.sheet = JSSAPI.createStyleSheet(rules as any, { meta: name });
     this.references = [];
     this.priority = priority;
     this.renderer = renderer;
     this.name = name;
   }
-  public getClasses(): T {
+  public getClasses(): jss.RulesType {
     return this.sheet.classes;
   }
   public getSheet(): jss.StyleSheet {
@@ -106,7 +106,7 @@ class ManagedStyleSheet<T> {
   public getName(): string {
     return this.name;
   }
-  public addReference(ref: StyleSheetReference<any>) {
+  public addReference(ref: StyleSheetReference) {
     this.references.indexOf
     if (this.references.indexOf(ref) != -1) {
       console.error("StyleSheetReference was already added before.");
@@ -117,7 +117,7 @@ class ManagedStyleSheet<T> {
     }
     this.references.push(ref);
   };
-  public removeReference(ref: StyleSheetReference<any>) {
+  public removeReference(ref: StyleSheetReference) {
     if (this.references.indexOf(ref) == -1) {
       console.error("Unknown StyleSheetReference");
       return;
@@ -133,20 +133,20 @@ class ManagedStyleSheet<T> {
 /**
  * StyleSheetReference holds a reference to a stylesheet.
  */
-export interface StyleSheetReference<T> {
-  classes: T;
+export interface StyleSheetReference {
+  classes: jss.RulesType;
   release(): void;
 }
 
-class StyleSheetReferenceImpl<T> implements StyleSheetReference<T> {
-  private managedSheet: ManagedStyleSheet<T>;
+class StyleSheetReferenceImpl implements StyleSheetReference {
+  private managedSheet: ManagedStyleSheet;
 
-  constructor(managedSheet: ManagedStyleSheet<T>) {
+  constructor(managedSheet: ManagedStyleSheet) {
     this.managedSheet = managedSheet;
     this.managedSheet.addReference(this);
   }
 
-  public get classes(): T {
+  public get classes(): jss.RulesType {
     return this.managedSheet.getClasses();
   }
 
@@ -167,7 +167,7 @@ class StyleSheetReferenceImpl<T> implements StyleSheetReference<T> {
  */
 export class Theme {
   private inUse: boolean;
-  private styles: { [name:string]:ManagedStyleSheet<any>; };
+  private styles: { [name:string]:ManagedStyleSheet; };
   private renderer: Renderer;
 
   constructor(styles?: {[name: string]:jss.RulesType}) {
@@ -189,13 +189,13 @@ export class Theme {
       this.registerStyle(name, styles[name]);
     }
   }
-  public require<T>(name: string): StyleSheetReference<T> {
+  public require(name: string): StyleSheetReference {
     this.inUse = true;
     const sheet = this.styles[name];
     if (!sheet) {
       return null;
     }
-    return new StyleSheetReferenceImpl<T>(sheet);
+    return new StyleSheetReferenceImpl(sheet);
   }
 }
 

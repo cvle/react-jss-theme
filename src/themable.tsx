@@ -37,11 +37,11 @@ export function makeThemable<T extends ThemableProps>(TargetComponent: React.Com
       context: Context;
 
       private classes: any;
-      private sheetRefs: Array<StyleSheetReference<any>>;
+      private sheetRefs: Array<StyleSheetReference>;
 
       constructor(props) {
         super(props);
-        this.sheetRefs = new Array<StyleSheetReference<any>>();
+        this.sheetRefs = new Array<StyleSheetReference>();
       }
 
       componentWillMount() {
