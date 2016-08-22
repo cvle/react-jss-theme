@@ -167,31 +167,35 @@ class StyleSheetReferenceImpl<T> implements StyleSheetReference<T> {
  */
 export class Theme {
   private inUse: boolean;
-  private sheets: { [name:string]:ManagedStyleSheet<any>; };
+  private styles: { [name:string]:ManagedStyleSheet<any>; };
   private renderer: Renderer;
 
-  constructor(sheets?: {[name: string]:jss.RulesType}) {
-    this.sheets = {};
+  constructor(styles?: {[name: string]:jss.RulesType}) {
+    this.styles = {};
     this.renderer = new DOMRenderer();
     this.inUse = false;
-    for (let name in sheets) {
-      this.register(name, sheets[name]);
+    if (styles) {
+    this.registerStyles(styles);
     }
   }
-  public register<T>(name: string, rules: T): void {
+  public registerStyle(name: string, rules: jss.RulesType): void {
     if (this.inUse) {
-      console.error("called register on theme, but theme already in use.");
-      return;
+      throw new Error("called register on theme, but theme already in use.");
     }
-    this.sheets[name] = new ManagedStyleSheet(name, rules, Object.keys(this.sheets).length, this.renderer);
+    this.styles[name] = new ManagedStyleSheet(name, rules, Object.keys(this.styles).length, this.renderer);
+  }
+  public registerStyles(styles: {[name: string]:jss.RulesType}): void {
+    for (let name in styles) {
+      this.registerStyle(name, styles[name]);
+    }
   }
   public require<T>(name: string): StyleSheetReference<T> {
     this.inUse = true;
-    const sheet = this.sheets[name];
+    const sheet = this.styles[name];
     if (!sheet) {
       return null;
     }
-    return new StyleSheetReferenceImpl<T>(this.sheets[name]);
+    return new StyleSheetReferenceImpl<T>(sheet);
   }
 }
 
