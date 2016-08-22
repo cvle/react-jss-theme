@@ -155,6 +155,8 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
   };
 }
 
+export type Styles = { [name:string]:ManagedStyleSheet; } | Object;
+
 /**
  * Theme is a collection of registered stylesheets.
  *
@@ -167,7 +169,7 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
  */
 export class Theme {
   private inUse: boolean;
-  private styles: { [name:string]:ManagedStyleSheet; };
+  private styles: Styles;
   private renderer: Renderer;
 
   constructor(styles?: {[name: string]:jss.RulesType}) {
@@ -184,7 +186,7 @@ export class Theme {
     }
     this.styles[name] = new ManagedStyleSheet(name, rules, Object.keys(this.styles).length, this.renderer);
   }
-  public registerStyles(styles: {[name: string]:jss.RulesType}): void {
+  public registerStyles(styles: Styles): void {
     for (let name in styles) {
       this.registerStyle(name, styles[name]);
     }
