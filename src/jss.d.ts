@@ -24,6 +24,17 @@ declare module "jss" {
   }
 
   export interface Rule {
+    name: string;
+    type: string;
+    selectorText: string;
+    className: string;
+    style: string;
+    originalStyle: string;
+    options: {
+      named?: boolean;
+      className?: string;
+      sheet?: StyleSheet;
+    };
     applyTo(element: HTMLElement): void;
     prop(name: string, value?: string): string;
     toJSON(): string;
