@@ -52,7 +52,7 @@ export function makeThemable<T extends ThemableProps>(TargetComponent: React.Com
         if (!name || !name.trim()) {
           continue;
         }
-        let items = name.split("\s+");
+        let items = name.split(/\s+/);
         for (let i of items) {
           let trimed = i.trim();
           if (trimed && computed.indexOf(trimed) === -1) {
