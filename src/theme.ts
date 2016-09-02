@@ -8,18 +8,15 @@
 import * as jss from "jss";
 import JSSAPI from "jss";
 
-/**
- * Renderer is an interface to a stylesheet renderer.
- */
 interface Renderer {
   attach(sheet: ManagedStyleSheet): void;
   detach(sheet: ManagedStyleSheet): void;
 }
 
 /**
- * DOMRenderer renders stylesheets to the DOM using priority based rendering.
+ * PriorityDOMRenderer renders stylesheets to the DOM using priority based rendering.
  */
-class DOMRenderer {
+class PriorityDOMRenderer {
   private map: { [priority:number]:HTMLStyleElement; };
   private sortedPriorities: Array<number>;
   private head: HTMLHeadElement;
@@ -130,9 +127,6 @@ class ManagedStyleSheet {
   };
 }
 
-/**
- * StyleSheetReference holds a reference to a stylesheet.
- */
 export interface StyleSheetReference {
   classes: jss.RulesType;
   release(): void;
@@ -174,7 +168,7 @@ export class Theme {
 
   constructor(styles?: Styles) {
     this.styles = {};
-    this.renderer = new DOMRenderer();
+    this.renderer = new PriorityDOMRenderer();
     this.inUse = false;
     if (styles) {
     this.registerStyles(styles);

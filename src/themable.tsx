@@ -10,20 +10,15 @@ import objectAssign = require("object-assign");
 
 import { Theme, StyleSheetReference } from "./theme";
 
-/** Context is an interface of the context passed by themeprovider */
-export interface Context {
+export interface ThemeProviderContext {
   theme: Theme;
 }
 
-/**
- * ThemableProps is an interface for the properties passed by the
- * Themable HOC to the target Component
- */
 export interface ThemableProps {
-  /** classes contains the css classes from the Theme */
+  /** classes are the CSS classes of the Styles */
   classes?: any;
 
-  /** styleName contains the style names from the Theme */
+  /** styleName are Style names from the Theme */
   styleName?: string;
 }
 
@@ -35,7 +30,7 @@ export interface ThemableProps {
  */
 export function makeThemable<T extends ThemableProps>(TargetComponent: React.ComponentClass<T>, defaultStyleNames = ""): React.ComponentClass<T> {
   let enhanced = class extends React.Component<T, void> {
-    context: Context;
+    context: ThemeProviderContext;
 
     private classes: any;
     private sheetRefs: Array<StyleSheetReference>;

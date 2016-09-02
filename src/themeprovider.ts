@@ -8,9 +8,7 @@
 import * as React from "react";
 import { Theme } from "./theme";
 
-/**
- * ThemeProviderProps is an interface for the properties of ThemeProvider.
- */
+
 export interface ThemeProviderProps {
   theme: Theme;
 }
