@@ -9,13 +9,15 @@ import {Rule } from "jss";
 import createHash = require("murmurhash-js/murmurhash3_gc");
 
 export function generateClassName(str: string, rule: Rule): string {
-  const hash = createHash(str)
-  let sheetMeta = "";
-  if (rule.options.sheet) {
-    const sheet = rule.options.sheet;
-    if (sheet.options.meta) {
-      sheetMeta = rule.options.sheet.options.meta + "-";
+  if (rule.name) {
+    if (rule.options.sheet) {
+      const sheet = rule.options.sheet;
+      if (sheet.options.meta) {
+        const sheetMeta = rule.options.sheet.options.meta;
+        return `${sheetMeta}-${rule.name}`;
+      }
     }
+    return `${rule.name}-${createHash(str)}`;
   }
-  return rule.name ? `${sheetMeta}${rule.name}-${hash}` : String(hash);
+  return `${createHash(str)}`;
 }
