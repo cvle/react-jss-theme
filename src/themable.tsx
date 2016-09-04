@@ -29,7 +29,13 @@ export interface ThemableProps {
  * @param defaultStyleName The default style to fetch from the theme.
  */
 export function makeThemable<T extends ThemableProps>(TargetComponent: React.ComponentClass<T>, defaultStyleNames = ""): React.ComponentClass<T> {
-  let enhanced = class extends React.Component<T, void> {
+  return class extends React.Component<T, void> {
+    static displayName = `hoc.Themable`;
+
+    static contextTypes: any = {
+      theme: React.PropTypes.object,
+    };
+
     context: ThemeProviderContext;
 
     private classes: any;
@@ -96,12 +102,6 @@ export function makeThemable<T extends ThemableProps>(TargetComponent: React.Com
       return <TargetComponent {...props} />;
     }
   } as React.ComponentClass<T>;
-  // Add expected context type to receive the context.
-  enhanced.contextTypes = {
-    theme: React.PropTypes.object,
-  };
-  enhanced.displayName = `hoc.Themable`;
-  return enhanced;
 }
 
 /**
