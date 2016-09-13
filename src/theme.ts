@@ -5,19 +5,57 @@
  * of the MIT license. See the LICENSE file for details.
  */
 
-import * as jss from "jss";
-import JSSAPI from "jss";
+import jss from "jss";
 
 interface Renderer {
   attach(sheet: ManagedStyleSheet): void;
   detach(sheet: ManagedStyleSheet): void;
+  toString(): string;
+}
+
+class MemoryRenderer {
+  private map: { [priority: number]: string; };
+  private sortedPriorities: Array<number>;
+
+  constructor() {
+    this.map = {};
+    this.sortedPriorities = new Array<number>();
+  }
+
+  attach(managed: ManagedStyleSheet) {
+    const priority = managed.getPriority();
+    if (this.map[priority] !== undefined) {
+      throw new Error(`Attaching StyleSheet '${managed.getName()}' that is already rendered.`);
+    }
+    this.map[priority] = managed.getSheet().toString();
+    this.sortedPriorities.push(priority);
+    this.sortedPriorities = this.sortedPriorities.sort((n1, n2) => n1 - n2);
+  }
+
+  detach(managed: ManagedStyleSheet) {
+    const priority = managed.getPriority();
+    if (this.map[priority] === undefined) {
+      throw new Error(`Detaching unavailable StyleSheet '${managed.getName()}'.`);
+    }
+    delete this.map[priority];
+    const idx = this.sortedPriorities.indexOf(priority);
+    delete this.sortedPriorities[idx];
+  }
+
+  toString(): string {
+    let output = "";
+    for (let priority of this.sortedPriorities) {
+      output += this.map[priority] + "\n";
+    }
+    return output;
+  }
 }
 
 /**
  * PriorityDOMRenderer renders stylesheets to the DOM using priority based rendering.
  */
 class PriorityDOMRenderer {
-  private map: { [priority:number]:HTMLStyleElement; };
+  private map: { [priority: number]: HTMLStyleElement; };
   private sortedPriorities: Array<number>;
   private head: HTMLHeadElement;
 
@@ -71,6 +109,14 @@ class PriorityDOMRenderer {
     const idx = this.sortedPriorities.indexOf(priority);
     delete this.sortedPriorities[idx];
   }
+
+  toString(): string {
+    let output = "";
+    for (let priority of this.sortedPriorities) {
+      output += this.map[priority].innerHTML + "\n";
+    }
+    return output;
+  }
 }
 
 /**
@@ -78,23 +124,26 @@ class PriorityDOMRenderer {
  * Additionally it associates a priority number with a styleSheet.
  */
 class ManagedStyleSheet {
-  private sheet: jss.StyleSheet;
-  private references: Array<StyleSheetReference>;
+  private sheet: JSS.StyleSheet;
+  private references: Array<Object>;
   private priority: number;
   private renderer: Renderer;
   private name: string;
+  private jss: JSS.JSS;
+  private named: boolean;
 
-  constructor(name: string, rules: jss.RulesType, priority: number, renderer: Renderer) {
-    this.sheet = JSSAPI.createStyleSheet(rules as any, { meta: name });
+  constructor(name: string, rules: JSS.RulesDef, priority: number, named: boolean, jss: JSS.JSS, renderer: Renderer) {
+    this.jss = jss;
+    this.sheet = this.jss.createStyleSheet(rules as any, { meta: name, named: named});
     this.references = [];
     this.priority = priority;
     this.renderer = renderer;
     this.name = name;
   }
-  public getClasses(): jss.RulesType {
+  public getClasses(): JSS.RulesDef {
     return this.sheet.classes;
   }
-  public getSheet(): jss.StyleSheet {
+  public getSheet(): JSS.StyleSheet {
     return this.sheet;
   }
   public getPriority(): number {
@@ -103,7 +152,7 @@ class ManagedStyleSheet {
   public getName(): string {
     return this.name;
   }
-  public addReference(ref: StyleSheetReference) {
+  public addReference(ref: Object) {
     this.references.indexOf
     if (this.references.indexOf(ref) != -1) {
       console.error("StyleSheetReference was already added before.");
@@ -114,7 +163,7 @@ class ManagedStyleSheet {
     }
     this.references.push(ref);
   };
-  public removeReference(ref: StyleSheetReference) {
+  public removeReference(ref: Object) {
     if (this.references.indexOf(ref) == -1) {
       console.error("Unknown StyleSheetReference");
       return;
@@ -128,7 +177,7 @@ class ManagedStyleSheet {
 }
 
 export interface StyleSheetReference {
-  classes: jss.RulesType;
+  classes: JSS.RulesDef;
   release(): void;
 }
 
@@ -140,7 +189,7 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
     this.managedSheet.addReference(this);
   }
 
-  public get classes(): jss.RulesType {
+  public get classes(): JSS.RulesDef {
     return this.managedSheet.getClasses();
   }
 
@@ -149,7 +198,17 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
   };
 }
 
-export type Styles = {[name: string]:jss.RulesType} ;
+export type Styles = { [name: string]: JSS.RulesDef };
+
+export interface ThemeConfig {
+  styles?: Styles,
+  renderToDOM?: boolean,
+  jss?: JSS.JSS,
+}
+
+export interface StyleConfig {
+  global?: boolean;
+}
 
 /**
  * Theme is a collection of registered stylesheets.
@@ -163,26 +222,40 @@ export type Styles = {[name: string]:jss.RulesType} ;
  */
 export class Theme {
   private inUse: boolean;
-  private styles: { [name:string]:ManagedStyleSheet; };
+  private styles: { [name: string]: ManagedStyleSheet; };
+  private globalStyles: Array<string>;
   private renderer: Renderer;
+  private jss: JSS.JSS;
 
-  constructor(styles?: Styles) {
+  constructor(styles?: Styles, config: ThemeConfig = { jss: jss }) {
     this.styles = {};
-    this.renderer = new PriorityDOMRenderer();
+    if (config.renderToDOM) {
+      this.renderer = new PriorityDOMRenderer();
+    } else {
+      this.renderer = new MemoryRenderer();
+    }
+    this.jss = config.jss;
     this.inUse = false;
+    this.globalStyles = [];
+
     if (styles) {
-    this.registerStyles(styles);
+      this.registerStyles(styles);
     }
   }
-  public registerStyle(name: string, rules: jss.RulesType): void {
+  public registerStyle(name: string, rules: JSS.RulesDef, config: StyleConfig = {}): void {
     if (this.inUse) {
       throw new Error("called register on theme, but theme already in use.");
     }
-    this.styles[name] = new ManagedStyleSheet(name, rules, Object.keys(this.styles).length, this.renderer);
+    this.styles[name] = new ManagedStyleSheet(name, rules,
+      Object.keys(this.styles).length, !config.global,
+      this.jss, this.renderer);
+    if (config.global) {
+      this.globalStyles.push(name);
+    }
   }
-  public registerStyles(styles: Styles): void {
+  public registerStyles(styles: Styles, config?: StyleConfig): void {
     for (let name in styles) {
-      this.registerStyle(name, styles[name]);
+      this.registerStyle(name, styles[name], config);
     }
   }
   public require(name: string): StyleSheetReference {
@@ -192,6 +265,23 @@ export class Theme {
       return null;
     }
     return new StyleSheetReferenceImpl(sheet);
+  }
+
+  public mountGlobalStyles() {
+    this.inUse = true;
+    for (let name of this.globalStyles) {
+      this.styles[name].addReference(this);
+    }
+  }
+  public unmountGlobalStyles() {
+    this.inUse = true;
+    for (let name of this.globalStyles) {
+      this.styles[name].removeReference(this);
+    }
+  }
+
+  public toString(): string {
+    return this.renderer.toString();
   }
 }
 

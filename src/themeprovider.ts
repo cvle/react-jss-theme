@@ -21,6 +21,27 @@ export class ThemeProvider extends React.Component<ThemeProviderProps, {}> {
     theme: React.PropTypes.object.isRequired,
   };
 
+  componentWillMount() {
+    if (this.props.theme) {
+      this.props.theme.mountGlobalStyles();
+    }
+  }
+
+  componentWillReceiveProps(nextProps: ThemeProviderProps) {
+    if (this.props.theme !== nextProps.theme) {
+      this.props.theme.unmountGlobalStyles();
+      if (nextProps.theme) {
+        nextProps.theme.mountGlobalStyles();
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.props.theme) {
+      this.props.theme.unmountGlobalStyles();
+    }
+  }
+
   getChildContext() {
     return { theme: this.props.theme };
   }

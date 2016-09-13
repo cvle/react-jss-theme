@@ -5,12 +5,12 @@
  * of the MIT license. See the LICENSE file for details.
  */
 
-declare module "jss" {
-  export type RuleType = { [rule: string]: any } | Object;
-  export type RulesType = { [name: string]: RuleType } | Object;
-  export type Plugin = (rules: RulesType) => void;
+declare namespace JSS {
+  type RuleDef = { [rule: string]: any } | Object;
+  type RulesDef = { [name: string]: RuleDef } | Object;
+  type Plugin = (rules: RulesDef) => void;
 
-  export interface StyleSheetOptions {
+   interface StyleSheetOptions {
     media?: string;
     meta?: string;
     named?: boolean;
@@ -18,12 +18,12 @@ declare module "jss" {
     element?: HTMLStyleElement;
   }
 
-  export interface SetupOptions {
+   interface SetupOptions {
     generateClassName?: (stylesStr: string, rule: Rule) => string;
     plugins?: Array<Plugin>;
   }
 
-  export interface Rule {
+   interface Rule {
     name: string;
     type: string;
     selectorText: string;
@@ -40,36 +40,33 @@ declare module "jss" {
     toJSON(): string;
   }
 
-  export interface StyleSheet {
+   interface StyleSheet {
     classes: any;
     attach(): void;
     detach(): void;
     toString(): string;
     options: StyleSheetOptions;
-    addRule(selector:string, rule: RuleType, options?: StyleSheetOptions): Rule;
-    addRule(rule: RuleType, options?: StyleSheetOptions): Rule;
+    addRule(selector:string, rule: RuleDef, options?: StyleSheetOptions): Rule;
+    addRule(rule: RuleDef, options?: StyleSheetOptions): Rule;
   }
 
-  export interface Registry {
+   interface Registry {
     registry:  Array<StyleSheet>;
     toString(): string;
   }
 
-  export default class JSS {
-    static create(options?: SetupOptions): JSS;
-    static setup(options: SetupOptions): void;
-    static use(...plugin: Array<Plugin>): void;
-    static createStyleSheet(rules: RulesType, options?: StyleSheetOptions): StyleSheet;
-    static createRule(selector: string, rule: RuleType): Rule;
-    static createRule(rule: RuleType): Rule;
-    static sheets: Registry;
-
+   interface JSS {
     setup(options: SetupOptions): void;
     use(...plugin: Array<Plugin>): void;
-    createStyleSheet(rules?: RulesType, options?: StyleSheetOptions): StyleSheet;
-    createRule(selector: string, rule: RuleType): Rule;
-    createRule(rule: RuleType): Rule;
+    createStyleSheet(rules?: RulesDef, options?: StyleSheetOptions): StyleSheet;
+    createRule(selector: string, rule: RuleDef): Rule;
+    createRule(rule: RuleDef): Rule;
     sheets: Registry;
   }
+}
+
+declare module "jss" {
+  export function create(options?: JSS.SetupOptions): JSS.JSS;
+  export default create();
 }
 
