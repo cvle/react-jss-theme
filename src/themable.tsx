@@ -15,11 +15,13 @@ export interface ThemeProviderContext {
 }
 
 export interface ThemableProps {
-  /** classes are the CSS classes of the Styles */
-  classes?: any;
-
   /** styleName are Style names from the Theme */
   styleName?: string;
+}
+
+export interface ThemableDecoratedProps<T> extends ThemableProps {
+  /** classes are the CSS classes of the Styles */
+  classes?: T;
 }
 
 /**
@@ -28,7 +30,7 @@ export interface ThemableProps {
  * @param TargetComponent  The target component to make themable.
  * @param defaultStyleName The default style to fetch from the theme.
  */
-export function makeThemable<T extends ThemableProps>(TargetComponent: React.ComponentClass<T>, defaultStyleNames = ""): React.ComponentClass<T> {
+export function makeThemable<T extends ThemableDecoratedProps<any>>(TargetComponent: React.ComponentClass<T>, defaultStyleNames = ""): React.ComponentClass<T> {
   return class extends React.Component<T, void> {
     static displayName = `hoc.Themable`;
 
@@ -107,8 +109,8 @@ export function makeThemable<T extends ThemableProps>(TargetComponent: React.Com
 /**
  * Themable calls makeThemable but has a Decorator signature.
  */
-export function Themable<T extends ThemableProps>(defaultStyleNames = ""): (target: React.ComponentClass<T>) => any {
+export function Themable<T extends ThemableDecoratedProps<any>>(defaultStyleNames = ""): (target: React.ComponentClass<T>) => any {
   return (target: React.ComponentClass<T>) => {
-    return makeThemable(target, defaultStyleNames);
+    return makeThemable<T>(target, defaultStyleNames);
   };
 }
