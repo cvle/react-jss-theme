@@ -39,7 +39,7 @@ class MemoryRenderer {
     }
     delete this.map[priority];
     const idx = this.sortedPriorities.indexOf(priority);
-    delete this.sortedPriorities[idx];
+    this.sortedPriorities.splice(idx, 1);
   }
 
   toString(): string {
@@ -107,7 +107,7 @@ class PriorityDOMRenderer {
     element.parentNode.removeChild(element);
     delete this.map[priority];
     const idx = this.sortedPriorities.indexOf(priority);
-    delete this.sortedPriorities[idx];
+    this.sortedPriorities.splice(idx, 1);
   }
 
   toString(): string {
@@ -169,7 +169,7 @@ class ManagedStyleSheet {
       return;
     }
     let idx = this.references.indexOf(ref);
-    delete this.references[idx];
+    this.references.splice(idx, 1);
     if (this.references.length === 0) {
       this.renderer.detach(this);
     }
