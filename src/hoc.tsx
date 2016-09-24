@@ -14,26 +14,36 @@ export interface ThemeProviderContext {
   theme: Theme;
 }
 
-export interface ThemableProps {
+export interface ThemeProps {
   /** styleName are Style names from the Theme */
   styleName?: string;
 }
 
-export interface ThemableDecoratedProps<T> extends ThemableProps {
+export interface ThemeInjectedProps<T> {
   /** classes are the CSS classes of the Styles */
   classes?: T;
 }
 
+interface Props extends ThemeProps, ThemeInjectedProps<any> {}
+
+export function removeThemeProps(props: Object) {
+  let hocProps: Props = {
+  styleName: undefined,
+  classes: undefined,
+  };
+  for (let key in hocProps) {
+    delete props[key];
+  }
+}
+
 /**
- * makeThemable wraps component with a HOC providing theming capabilities.
+ * decorateWithTheme wraps component with a HOC providing theming capabilities.
  *
  * @param TargetComponent  The target component to make themable.
  * @param defaultStyleName The default style to fetch from the theme.
  */
-export function makeThemable<T extends ThemableDecoratedProps<any>>(TargetComponent: React.ComponentClass<T>, defaultStyleNames = ""): React.ComponentClass<T> {
-  return class extends React.Component<T, void> {
-    static displayName = `hoc.Themable`;
-
+export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, defaultStyleNames = ""): React.ComponentClass<any> {
+  return class WithTheme extends React.Component<Props, void> {
     static contextTypes: any = {
       theme: React.PropTypes.object,
     };
@@ -103,14 +113,14 @@ export function makeThemable<T extends ThemableDecoratedProps<any>>(TargetCompon
       }
       return <TargetComponent {...props} />;
     }
-  } as React.ComponentClass<T>;
+  } as React.ComponentClass<any>;
 }
 
 /**
- * Themable calls makeThemable but has a Decorator signature.
+ * WithTheme uses a Decorator signature.
  */
-export function Themable<T extends ThemableDecoratedProps<any>>(defaultStyleNames = ""): (target: React.ComponentClass<T>) => any {
-  return (target: React.ComponentClass<T>) => {
-    return makeThemable<T>(target, defaultStyleNames);
+export function WithTheme(defaultStyleNames = ""): (target: React.ComponentClass<any>) => any {
+  return (target: React.ComponentClass<any>) => {
+    return decorateWithTheme(target, defaultStyleNames);
   };
 }
