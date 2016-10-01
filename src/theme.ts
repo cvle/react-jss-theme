@@ -134,7 +134,7 @@ class ManagedStyleSheet {
 
   constructor(name: string, rules: JSS.RulesDef, priority: number, named: boolean, jss: JSS.JSS, renderer: Renderer) {
     this.jss = jss;
-    this.sheet = this.jss.createStyleSheet(rules as any, { meta: name, named: named});
+    this.sheet = this.jss.createStyleSheet(rules as any, { meta: name, named: named });
     this.references = [];
     this.priority = priority;
     this.renderer = renderer;
@@ -153,8 +153,7 @@ class ManagedStyleSheet {
     return this.name;
   }
   public addReference(ref: Object) {
-    this.references.indexOf
-    if (this.references.indexOf(ref) != -1) {
+    if (this.references.indexOf(ref) !== -1) {
       console.error("StyleSheetReference was already added before.");
       return;
     }
@@ -164,7 +163,7 @@ class ManagedStyleSheet {
     this.references.push(ref);
   };
   public removeReference(ref: Object) {
-    if (this.references.indexOf(ref) == -1) {
+    if (this.references.indexOf(ref) === -1) {
       console.error("Unknown StyleSheetReference");
       return;
     }
@@ -201,9 +200,9 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
 export type Styles = { [name: string]: JSS.RulesDef };
 
 export interface ThemeConfig {
-  styles?: Styles,
-  renderToDOM?: boolean,
-  jss?: JSS.JSS,
+  styles?: Styles;
+  renderToDOM?: boolean;
+  jss?: JSS.JSS;
 }
 
 export interface StyleConfig {

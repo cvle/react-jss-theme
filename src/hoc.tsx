@@ -24,12 +24,12 @@ export interface ThemeInjectedProps<T> {
   classes?: T;
 }
 
-interface Props extends ThemeProps, ThemeInjectedProps<any> {}
+interface Props extends ThemeProps, ThemeInjectedProps<any> { }
 
 export function removeThemeProps(props: Object) {
   let hocProps: Props = {
-  styleName: undefined,
-  classes: undefined,
+    styleName: undefined,
+    classes: undefined,
   };
   for (let key in hocProps) {
     delete props[key];

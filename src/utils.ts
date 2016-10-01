@@ -9,7 +9,7 @@ import createHash = require("murmurhash-js/murmurhash3_gc");
 
 export function generateClassName(str: string, rule: JSS.Rule): string {
   if (rule.name) {
-    const dashedRuleName = rule.name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+    const dashedRuleName = rule.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
     if (rule.options.sheet) {
       const sheet = rule.options.sheet;
       if (sheet.options.meta) {

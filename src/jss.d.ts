@@ -10,7 +10,7 @@ declare namespace JSS {
   type RulesDef = { [name: string]: RuleDef } | Object;
   type Plugin = (rules: RulesDef) => void;
 
-   interface StyleSheetOptions {
+  interface StyleSheetOptions {
     media?: string;
     meta?: string;
     named?: boolean;
@@ -18,12 +18,12 @@ declare namespace JSS {
     element?: HTMLStyleElement;
   }
 
-   interface SetupOptions {
+  interface SetupOptions {
     generateClassName?: (stylesStr: string, rule: Rule) => string;
     plugins?: Array<Plugin>;
   }
 
-   interface Rule {
+  interface Rule {
     name: string;
     type: string;
     selectorText: string;
@@ -40,22 +40,22 @@ declare namespace JSS {
     toJSON(): string;
   }
 
-   interface StyleSheet {
+  interface StyleSheet {
     classes: any;
     attach(): void;
     detach(): void;
     toString(): string;
     options: StyleSheetOptions;
-    addRule(selector:string, rule: RuleDef, options?: StyleSheetOptions): Rule;
+    addRule(selector: string, rule: RuleDef, options?: StyleSheetOptions): Rule;
     addRule(rule: RuleDef, options?: StyleSheetOptions): Rule;
   }
 
-   interface Registry {
-    registry:  Array<StyleSheet>;
+  interface Registry {
+    registry: Array<StyleSheet>;
     toString(): string;
   }
 
-   interface JSS {
+  interface JSS {
     setup(options: SetupOptions): void;
     use(...plugin: Array<Plugin>): void;
     createStyleSheet(rules?: RulesDef, options?: StyleSheetOptions): StyleSheet;
@@ -69,4 +69,3 @@ declare module "jss" {
   export function create(options?: JSS.SetupOptions): JSS.JSS;
   export default create();
 }
-
