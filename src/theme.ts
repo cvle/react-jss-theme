@@ -197,17 +197,21 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
   };
 }
 
-export type Styles = { [name: string]: JSS.RulesDef };
+export type StylesMap = { [name: string]: JSS.RulesDef };
+export type StylesCallback = (config) => StylesMap;
+export type StylesType = StylesMap | StylesCallback;
 
-export interface ThemeConfig {
-  styles?: Styles;
+export interface ConstructThemeParams<TConfig> {
   renderToDOM?: boolean;
   jss?: JSS.JSS;
+  styleConfig?: TConfig;
 }
 
-export interface StyleConfig {
+export interface RegisterOptions {
   global?: boolean;
 }
+
+declare const process: any;
 
 /**
  * Theme is a collection of registered stylesheets.
@@ -219,42 +223,49 @@ export interface StyleConfig {
  * The stylesheets will be rendered according to the order they were
  * registered to the Theme, allowing indirect prioritizing of stylesheets.
  */
-export class Theme {
+export class Theme<TConfig> {
   private inUse: boolean;
   private styles: { [name: string]: ManagedStyleSheet; };
   private globalStyles: Array<string>;
   private renderer: Renderer;
+  private styleConfig: TConfig;
   private jss: JSS.JSS;
 
-  constructor(styles?: Styles, config: ThemeConfig = { jss: jss }) {
+  constructor(params: ConstructThemeParams<TConfig> = { jss: jss }) {
     this.styles = {};
-    if (config.renderToDOM) {
+    if (params.renderToDOM) {
       this.renderer = new PriorityDOMRenderer();
     } else {
       this.renderer = new MemoryRenderer();
     }
-    this.jss = config.jss;
+    this.styleConfig = params.styleConfig;
+    if (process && process.env.NODE_ENV !== "production") {
+      this.styleConfig = Object.freeze(this.styleConfig);
+    }
+    this.jss = params.jss;
     this.inUse = false;
     this.globalStyles = [];
-
-    if (styles) {
-      this.registerStyles(styles);
-    }
   }
-  public registerStyle(name: string, rules: JSS.RulesDef, config: StyleConfig = {}): void {
+
+  public registerStyle(name: string, rules: JSS.RulesDef, opts: RegisterOptions = {}): void {
     if (this.inUse) {
       throw new Error("called register on theme, but theme already in use.");
     }
     this.styles[name] = new ManagedStyleSheet(name, rules,
-      Object.keys(this.styles).length, !config.global,
+      Object.keys(this.styles).length, !opts.global,
       this.jss, this.renderer);
-    if (config.global) {
+    if (opts.global) {
       this.globalStyles.push(name);
     }
   }
-  public registerStyles(styles: Styles, config?: StyleConfig): void {
-    for (let name in styles) {
-      this.registerStyle(name, styles[name], config);
+  public registerStyles(styles: StylesType, opts?: RegisterOptions): void {
+    if (typeof styles === "function") {
+      const cb = styles as StylesCallback;
+      return this.registerStyles(cb(this.styleConfig), opts);
+    }
+    const stylesMap = styles as StylesMap;
+    for (const name in stylesMap) {
+      this.registerStyle(name, styles[name], opts);
     }
   }
   public require(name: string): StyleSheetReference {
@@ -283,5 +294,3 @@ export class Theme {
     return this.renderer.toString();
   }
 }
-
-export default Theme;
