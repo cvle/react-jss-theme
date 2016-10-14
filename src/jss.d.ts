@@ -16,6 +16,7 @@ declare namespace JSS {
     named?: boolean;
     link?: boolean;
     element?: HTMLStyleElement;
+    index?: number;
   }
 
   interface SetupOptions {
@@ -48,6 +49,7 @@ declare namespace JSS {
     options: StyleSheetOptions;
     addRule(selector: string, rule: RuleDef, options?: StyleSheetOptions): Rule;
     addRule(rule: RuleDef, options?: StyleSheetOptions): Rule;
+    attached?: boolean;
   }
 
   interface Registry {

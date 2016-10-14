@@ -23,7 +23,7 @@
   "devDependencies": {
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.13.6",
-    "jss": "^5.4.0",
+    "jss": "^5.5.5",
     "merge2": "^1.0.2",
     "murmurhash-js": "^1.0.0",
     "object-assign": "^4.1.0",
