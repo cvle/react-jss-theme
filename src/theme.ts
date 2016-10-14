@@ -198,8 +198,8 @@ class StyleSheetReferenceImpl implements StyleSheetReference {
 }
 
 export type StylesMap = { [name: string]: JSS.RulesDef };
-export type StylesCallback = (config) => StylesMap;
-export type StylesType = StylesMap | StylesCallback;
+export type StylesCallback<TConfig> = (config: TConfig) => StylesMap;
+export type Styles = StylesMap | StylesCallback<any>;
 
 export interface ConstructThemeParams<TConfig> {
   renderToDOM?: boolean;
@@ -253,14 +253,21 @@ export class Theme<TConfig> {
       this.globalStyles.push(name);
     }
   }
-  public registerStyles(styles: StylesType, opts?: RegisterOptions): void {
+
+  public registerStyles(styles: Styles | Styles[], opts?: RegisterOptions): void {
+    if (Array.isArray(styles)) {
+      for (const style of styles) {
+        this.registerStyles(style, opts);
+      }
+      return;
+    }
     if (typeof styles === "function") {
-      const cb = styles as StylesCallback;
+      const cb = styles as StylesCallback<TConfig>;
       return this.registerStyles(cb(this.styleConfig), opts);
     }
     const stylesMap = styles as StylesMap;
     for (const name in stylesMap) {
-      this.registerStyle(name, styles[name], opts);
+      this.registerStyle(name, stylesMap[name], opts);
     }
   }
   public require(name: string): StyleSheetReference {
