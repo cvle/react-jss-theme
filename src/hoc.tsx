@@ -20,8 +20,8 @@ export interface ThemeProps {
 }
 
 export interface ThemeInjectedProps<T> {
-  /** classes are the CSS classes of the Styles */
-  classes?: T;
+  /** themeClasses are the CSS classes of the Styles */
+  themeClasses?: T;
 }
 
 interface Props extends ThemeProps, ThemeInjectedProps<any> { }
@@ -29,7 +29,7 @@ interface Props extends ThemeProps, ThemeInjectedProps<any> { }
 export function removeThemeProps(props: Object) {
   let hocProps: Props = {
     styleName: undefined,
-    classes: undefined,
+    themeClasses: undefined,
   };
   for (let key in hocProps) {
     delete props[key];
@@ -50,13 +50,13 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
 
     context: ThemeProviderContext<any>;
 
-    private classes: any;
+    private themeClasses: any;
     private sheetRefs: Array<StyleSheetReference>;
 
     constructor(props) {
       super(props);
       this.sheetRefs = new Array<StyleSheetReference>();
-      this.classes = {};
+      this.themeClasses = {};
     }
 
     private toStyleNameArray(...styleName: Array<string>): Array<string> {
@@ -89,11 +89,11 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
           return;
         }
         for (let className of Object.keys(ref.classes)) {
-          if (this.classes[className] === undefined) {
-            this.classes[className] = ref.classes[className];
+          if (this.themeClasses[className] === undefined) {
+            this.themeClasses[className] = ref.classes[className];
             continue;
           }
-          this.classes[className] += " " + ref.classes[className];
+          this.themeClasses[className] += " " + ref.classes[className];
         }
         this.sheetRefs.push(ref);
       }
@@ -108,8 +108,8 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
     public render() {
       let styleName = this.toStyleNameArray(defaultStyleNames, this.props["styleName"]).join(" ");
       let props = objectAssign({}, this.props, { styleName: styleName });
-      if (this.classes) {
-        props["classes"] = this.classes;
+      if (this.themeClasses) {
+        props["themeClasses"] = this.themeClasses;
       }
       return <TargetComponent {...props} />;
     }
