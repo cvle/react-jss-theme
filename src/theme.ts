@@ -230,7 +230,7 @@ export class Theme<TConfig> {
   private styleConfig: TConfig;
   private jss: JSS.JSS;
 
-  constructor(params: ConstructThemeParams<TConfig> = { jss: jss }) {
+  constructor(params: ConstructThemeParams<TConfig> = {}) {
     this.styles = {};
     if (params.renderToDOM) {
       this.renderer = new PriorityDOMRenderer();
@@ -241,7 +241,7 @@ export class Theme<TConfig> {
     if (process && process.env.NODE_ENV !== "production") {
       this.styleConfig = Object.freeze(this.styleConfig);
     }
-    this.jss = params.jss;
+    this.jss = params.jss ? params.jss : jss;
     this.globalStyles = [];
   }
 
