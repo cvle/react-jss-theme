@@ -14,36 +14,33 @@ export interface ThemeProviderContext<TThemeConfig> {
   theme: Theme<TThemeConfig>;
 }
 
-export interface ThemeProps {
+export interface ThemeOuterAttributes {
   /** styleName are Style names from the Theme */
   styleName?: string;
 }
 
-export interface ThemeInjectedProps<T> {
+export interface ThemeInnerAttributes<TThemeClasses> {
   /** themeClasses are the CSS classes of the Styles */
-  themeClasses?: T;
+  themeClasses?: TThemeClasses;
 }
 
-interface Props extends ThemeProps, ThemeInjectedProps<any> { }
+export interface ThemeAttributes<TThemeClasses> extends
+  ThemeOuterAttributes,
+  ThemeInnerAttributes<TThemeClasses> { }
 
-export function removeThemeProps(props: Object) {
-  let hocProps: Props = {
-    styleName: undefined,
-    themeClasses: undefined,
-  };
-  for (let key in hocProps) {
-    delete props[key];
-  }
+export function removeThemeAttributes(attributes: ThemeAttributes<any>) {
+  delete attributes.themeClasses;
+  delete attributes.styleName;
 }
 
 /**
- * decorateWithTheme wraps component with a HOC providing theming capabilities.
+ * decorate wraps component with a HOC providing theming capabilities.
  *
  * @param TargetComponent  The target component to make themable.
  * @param defaultStyleName The default style to fetch from the theme.
  */
-export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, defaultStyleNames = ""): React.ComponentClass<any> {
-  return class WithTheme extends React.Component<Props, void> {
+export function decorate<TProps extends ThemeAttributes<any>>(TargetComponent: React.ComponentClass<TProps>, defaultStyleNames = ""): React.ComponentClass<TProps> {
+  return class WithTheme extends React.Component<TProps, void> {
     static contextTypes: any = {
       theme: React.PropTypes.object,
     };
@@ -53,7 +50,7 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
     private themeClasses: any;
     private sheetRefs: Array<StyleSheetReference>;
 
-    constructor(props) {
+    constructor(props: TProps) {
       super(props);
       this.sheetRefs = new Array<StyleSheetReference>();
       this.themeClasses = {};
@@ -116,11 +113,8 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
   } as React.ComponentClass<any>;
 }
 
-/**
- * WithTheme uses a Decorator signature.
- */
-export function WithTheme(defaultStyleNames = ""): (target: React.ComponentClass<any>) => any {
-  return (target: React.ComponentClass<any>) => {
-    return decorateWithTheme(target, defaultStyleNames);
+export function withTheme<TProps extends ThemeAttributes<any>>(defaultStyleNames = ""): (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps> {
+  return (target: React.ComponentClass<TProps>) => {
+    return decorate<TProps>(target, defaultStyleNames);
   };
 }
