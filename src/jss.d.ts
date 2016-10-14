@@ -6,8 +6,8 @@
  */
 
 declare namespace JSS {
-  type RuleDef = { [rule: string]: any } | Object;
-  type RulesDef = { [name: string]: RuleDef } | Object;
+  type RuleDef = { [rule: string]: any };
+  type RulesDef = { [name: string]: RuleDef };
   type Plugin = (rules: RulesDef) => void;
 
   interface StyleSheetOptions {
