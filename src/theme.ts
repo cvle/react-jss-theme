@@ -224,7 +224,6 @@ declare const process: any;
  * registered to the Theme, allowing indirect prioritizing of stylesheets.
  */
 export class Theme<TConfig> {
-  private inUse: boolean;
   private styles: { [name: string]: ManagedStyleSheet; };
   private globalStyles: Array<string>;
   private renderer: Renderer;
@@ -243,14 +242,10 @@ export class Theme<TConfig> {
       this.styleConfig = Object.freeze(this.styleConfig);
     }
     this.jss = params.jss;
-    this.inUse = false;
     this.globalStyles = [];
   }
 
   public registerStyle(name: string, rules: JSS.RulesDef, opts: RegisterOptions = {}): void {
-    if (this.inUse) {
-      throw new Error("called register on theme, but theme already in use.");
-    }
     this.styles[name] = new ManagedStyleSheet(name, rules,
       Object.keys(this.styles).length, !opts.global,
       this.jss, this.renderer);
@@ -269,7 +264,6 @@ export class Theme<TConfig> {
     }
   }
   public require(name: string): StyleSheetReference {
-    this.inUse = true;
     const sheet = this.styles[name];
     if (!sheet) {
       return null;
@@ -278,13 +272,11 @@ export class Theme<TConfig> {
   }
 
   public mountGlobalStyles() {
-    this.inUse = true;
     for (let name of this.globalStyles) {
       this.styles[name].addReference(this);
     }
   }
   public unmountGlobalStyles() {
-    this.inUse = true;
     for (let name of this.globalStyles) {
       this.styles[name].removeReference(this);
     }
