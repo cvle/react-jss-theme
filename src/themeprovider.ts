@@ -9,14 +9,14 @@ import * as React from "react";
 import { Theme } from "./theme";
 
 
-export interface ThemeProviderProps {
-  theme: Theme;
+export interface ThemeProviderProps<TThemeConfig> {
+  theme: Theme<TThemeConfig>;
 }
 
 /**
  * ThemeProvider provides a theme context to all children components.
  */
-export class ThemeProvider extends React.Component<ThemeProviderProps, {}> {
+export class ThemeProvider<TThemeConfig> extends React.Component<ThemeProviderProps<TThemeConfig>, {}> {
   static childContextTypes = {
     theme: React.PropTypes.object.isRequired,
   };
@@ -27,7 +27,7 @@ export class ThemeProvider extends React.Component<ThemeProviderProps, {}> {
     }
   }
 
-  componentWillReceiveProps(nextProps: ThemeProviderProps) {
+  componentWillReceiveProps(nextProps: ThemeProviderProps<TThemeConfig>) {
     if (this.props.theme !== nextProps.theme) {
       this.props.theme.unmountGlobalStyles();
       if (nextProps.theme) {

@@ -10,8 +10,8 @@ import objectAssign = require("object-assign");
 
 import { Theme, StyleSheetReference } from "./theme";
 
-export interface ThemeProviderContext {
-  theme: Theme;
+export interface ThemeProviderContext<TThemeConfig> {
+  theme: Theme<TThemeConfig>;
 }
 
 export interface ThemeProps {
@@ -48,7 +48,7 @@ export function decorateWithTheme(TargetComponent: React.ComponentClass<any>, de
       theme: React.PropTypes.object,
     };
 
-    context: ThemeProviderContext;
+    context: ThemeProviderContext<any>;
 
     private classes: any;
     private sheetRefs: Array<StyleSheetReference>;
