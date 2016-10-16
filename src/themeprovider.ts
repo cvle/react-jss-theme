@@ -23,22 +23,22 @@ export class ThemeProvider<TThemeConfig> extends React.Component<ThemeProviderPr
 
   componentWillMount() {
     if (this.props.theme) {
-      this.props.theme.mountGlobalStyles();
+      this.props.theme.attachGlobalStyles();
     }
   }
 
   componentWillReceiveProps(nextProps: ThemeProviderProps<TThemeConfig>) {
     if (this.props.theme !== nextProps.theme) {
-      this.props.theme.unmountGlobalStyles();
+      this.props.theme.detachAll();
       if (nextProps.theme) {
-        nextProps.theme.mountGlobalStyles();
+        nextProps.theme.attachGlobalStyles();
       }
     }
   }
 
   componentWillUnmount() {
     if (this.props.theme) {
-      this.props.theme.unmountGlobalStyles();
+      this.props.theme.detachAll();
     }
   }
 

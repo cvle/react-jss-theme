@@ -8,7 +8,7 @@
 declare namespace JSS {
   type RuleDef = { [rule: string]: any };
   type RulesDef = { [name: string]: RuleDef };
-  type Plugin = (rules: RulesDef) => void;
+  type Plugin = (rule: Rule) => void;
 
   interface StyleSheetOptions {
     media?: string;
@@ -49,7 +49,7 @@ declare namespace JSS {
     options: StyleSheetOptions;
     addRule(selector: string, rule: RuleDef, options?: StyleSheetOptions): Rule;
     addRule(rule: RuleDef, options?: StyleSheetOptions): Rule;
-    attached?: boolean;
+    attached: boolean;
   }
 
   interface Registry {

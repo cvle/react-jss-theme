@@ -8,7 +8,7 @@
 import * as React from "react";
 import objectAssign = require("object-assign");
 
-import { Theme, StyleSheetReference } from "./theme";
+import { Theme } from "./theme";
 
 export interface ThemeProviderContext<TThemeConfig> {
   theme: Theme<TThemeConfig>;
@@ -41,11 +41,9 @@ export function withTheme<TProps extends ThemeAttributes<any>>(defaultStyleNames
       context: ThemeProviderContext<any>;
 
       private themeClasses: any;
-      private sheetRefs: Array<StyleSheetReference>;
 
       constructor(props: TProps) {
         super(props);
-        this.sheetRefs = new Array<StyleSheetReference>();
         this.themeClasses = {};
       }
 
@@ -73,25 +71,18 @@ export function withTheme<TProps extends ThemeAttributes<any>>(defaultStyleNames
         const styleNames = this.toStyleNameArray(defaultStyleNames, this.props["styleName"]);
         for (const styleName of styleNames) {
 
-          const ref = this.context.theme.require(styleName);
-          if (!ref) {
-            console.error(`Style name '${styleName}' was not found in template.`);
+          const sheet = this.context.theme.require(styleName);
+          if (!sheet) {
+            console.error(`Stylesheet '${styleName}' was not found in template.`);
             return;
           }
-          for (const className of Object.keys(ref.classes)) {
+          for (const className of Object.keys(sheet.classes)) {
             if (this.themeClasses[className] === undefined) {
-              this.themeClasses[className] = ref.classes[className];
+              this.themeClasses[className] = sheet.classes[className];
               continue;
             }
-            this.themeClasses[className] += " " + ref.classes[className];
+            this.themeClasses[className] += " " + sheet.classes[className];
           }
-          this.sheetRefs.push(ref);
-        }
-      }
-
-      componentWillUnmount() {
-        for (const ref of this.sheetRefs) {
-          ref.release();
         }
       }
 

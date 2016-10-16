@@ -23,79 +23,13 @@ export interface RegisterOptions {
 }
 
 /**
- * ManagedStyleSheet automatically mount/unmount Styles.
- */
-class ManagedStyleSheet {
-  private sheet: JSS.StyleSheet;
-  private references: Array<Object>;
-
-  constructor(sheet: JSS.StyleSheet) {
-    this.sheet = sheet;
-    this.references = [];
-  }
-
-  public get classes(): JSS.RulesDef {
-    return this.sheet.classes;
-  }
-
-  public addReference(ref: Object) {
-    if (this.references.indexOf(ref) !== -1) {
-      console.error("StyleSheetReference was already added before.");
-      return;
-    }
-    if (this.references.length === 0) {
-      this.sheet.attach();
-    }
-    this.references.push(ref);
-  };
-
-  public removeReference(ref: Object) {
-    if (this.references.indexOf(ref) === -1) {
-      console.error("Unknown StyleSheetReference");
-      return;
-    }
-    const idx = this.references.indexOf(ref);
-    this.references.splice(idx, 1);
-    if (this.references.length === 0) {
-      this.sheet.detach();
-    }
-  };
-}
-
-export interface StyleSheetReference {
-  classes: JSS.RulesDef;
-  release(): void;
-}
-
-class StyleSheetReferenceImpl implements StyleSheetReference {
-  private managedSheet: ManagedStyleSheet;
-
-  constructor(managedSheet: ManagedStyleSheet) {
-    this.managedSheet = managedSheet;
-    this.managedSheet.addReference(this);
-  }
-
-  public get classes(): JSS.RulesDef {
-    return this.managedSheet.classes;
-  }
-
-  public release() {
-    this.managedSheet.removeReference(this);
-  };
-}
-
-/**
  * Theme is a collection of registered stylesheets.
- *
- * A stylesheet can be required from the theme returning a stylesheetReference,
- * causing the stylesheet to be rendered to the DOM. Releasing all references to a stylesheet,
- * will remove the stylesheet from the DOM.
  *
  * The stylesheets will be rendered according to the order they were
  * registered to the Theme, allowing indirect prioritizing of stylesheets.
  */
 export class Theme<TConfig> {
-  private styles: { [name: string]: ManagedStyleSheet; };
+  private styles: { [name: string]: JSS.StyleSheet; };
   private globalStyles: Array<string>;
   private styleConfig: TConfig;
   private jss: JSS.JSS;
@@ -116,7 +50,7 @@ export class Theme<TConfig> {
       named: !opts.global,
       index: 1000 + Object.keys(this.styles).length,
     });
-    this.styles[name] = new ManagedStyleSheet(sheet);
+    this.styles[name] = sheet;
     if (opts.global) {
       this.globalStyles.push(name);
     }
@@ -139,23 +73,26 @@ export class Theme<TConfig> {
     }
   }
 
-  public require(name: string): StyleSheetReference {
+  public require(name: string): JSS.StyleSheet {
     const sheet = this.styles[name];
     if (!sheet) {
       return null;
     }
-    return new StyleSheetReferenceImpl(sheet);
+    if (!sheet.attached) {
+      sheet.attach();
+    }
+    return sheet;
   }
 
-  public mountGlobalStyles() {
+  public attachGlobalStyles() {
     for (let name of this.globalStyles) {
-      this.styles[name].addReference(this);
+      this.require(name);
     }
   }
 
-  public unmountGlobalStyles() {
-    for (let name of this.globalStyles) {
-      this.styles[name].removeReference(this);
+  public detachAll() {
+    for (let name in this.styles) {
+      this.styles[name].detach;
     }
   }
 
