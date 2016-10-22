@@ -1,0 +1,22 @@
+language: node_js
+node_js:
+- 6
+- 4
+before_script:
+- npm prune
+script:
+- npm run test
+after_success:
+- npm run ci:coveralls
+before_deploy:
+- npm run build
+deploy:
+  provider: npm
+  on:
+    repo: wikiwi/react-jss-theme
+    tags: true
+    node: 4
+  skip_cleanup: true
+  email: vinh@wikiwi.io
+  api_key:
+    secure: 0UaVK3D9ymzMDtHWdVV2fNczrzG6E1x3bKVOtUDWH9J4A00xq/7TwYZBwHbeAdZQIXpIUQWlc4/N9J4UGQ2A1AqYhwbzjZjUTY0X1ow/XIP1849suxvF2KjZh2MOZU17IAPvoQ2K6E1ALpMipqkvmOHc5t4IXYk9Equ/m7ePJOcAdbUI1o68cEr5KSOd77rvZOOXeJkpZ8IRWStHZY/xodJqE79LbCp6+QHz6nx8GM3HZVPF2ExA0tIN2BekMtT8VX9ndZKDKRz+nLsxcTMJv1x3xNLbgMuo5hcgqsiItJKn3SKIQIxyUgizmrBpexMHyNv+JTy8/qBXRQsTgExEnJMzihF6vwFvIuJ28CFZ16aG++hxhTwfziAWENOMpSuWzX3ZfXCGNJVMHEN9Zf2AFWApsPI1XNc02ZaoxqrriQoz2g7Iu0WhFwszid0/7K1XE7cQ1V/WStysvThhhQoDlNAu4TvXIc8zvrPG62MyVzQ9zF3F/2JwrR7Fu7Z6YQL9edBSowGkDsq6wfifenjktNA5ENE9Dh4NU4b/XgyiLfaQzJhBZuDkSK4impSZOhe9Ad3nBK/PA7CS2ZEHacRS/nN1WhIQad8eMJBgN7nycGSqaFHZBY0MJN8bOb5naNpNLUjPA+LWFbF/b0JGdWGmYCx5nKxcPSCdaccJQbMpcqo=

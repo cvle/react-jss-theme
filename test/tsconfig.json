@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "es6",
+    "module": "commonjs",
     "moduleResolution": "node",
     "jsx": "react",
     "noImplicitAny": true,
@@ -9,14 +9,15 @@
     "baseUrl": "./",
     "paths": {
       "*": [
-        "./node_modules/typeless/*"
+        "../node_modules/typeless/*"
       ]
     }
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.tsx",
-    "./src/**/*.d.ts"
+    "./**/*.ts",
+    "./**/*.d.ts",
+    "./**/*.tsx",
+    "../src/**/*.d.ts"
   ],
   "exclude": [
     "node_modules"

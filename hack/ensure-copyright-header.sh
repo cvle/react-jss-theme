@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2016 wikiwi.io
+# Copyright (C) 2016 Chi Vinh Le and contributors.
 #
 # This software may be modified and distributed under the terms
 # of the MIT license. See the LICENSE file for details.
@@ -9,14 +9,14 @@ shopt -s globstar
 
 read -d '' ASTERISK_HEADER <<EOL
 /*
- * Copyright (C) $(date +%Y) wikiwi.io
+ * Copyright (C) $(date +%Y) Chi Vinh Le and contributors.
  *
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
  */
 EOL
 
-for f in src/**/*.ts src/**/*.tsx; do
+for f in src/**/*.tsx src/**/*.ts src/**/*.d.ts test/**/*.tsx test/**/*.ts test/**/*.d.ts; do
   if ! grep -q "Copyright (C)" "$f"
   then
     echo "Adding license notice to $f"

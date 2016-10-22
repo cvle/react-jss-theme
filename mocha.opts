@@ -1,0 +1,7 @@
+--compilers tsx:ts-node/register,ts:ts-node/register
+--reporter dot
+src/**/*.spec.tsx
+src/**/*.spec.ts
+test/**/*.test.tsx
+test/**/*.test.ts
+

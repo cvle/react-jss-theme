@@ -5,7 +5,5 @@
  * of the MIT license. See the LICENSE file for details.
  */
 
-export * from "./themecontextprovider";
-export * from "./themefactory";
-export * from "./withtheme";
-export * from "./utils";
+// Allow modules with no type definitions.
+declare module "*";

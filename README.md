@@ -1,25 +1,59 @@
 # react-jss-theme
-WIP: This is still a prototype.
 
-# Examples
+Theming solution for React based on JSS.
 
-## Define a theme
+[![NPM Version Widget]][npm version]
+[![Build Status Widget]][build status]
+[![Coverage Status Widget]][coverage status]
 
-    let theme = new Theme({
-      flatButton: {
-        container: {
-          backgroundColor: "#fff",
+## Installation
+
+```sh
+npm install react-jss-theme --save
+```
+
+## Usage
+
+### Define a theme
+
+    const factory = createThemeFactory(
+      (vars) => ({
+        color: vars.color,
+        classes: {
+          root: {
+            color: vars.color,
+          },
         },
-        label: {
-          color: "#000",
-        },
+      }));
+
+    const theme = factory({ color: "red" });
+    console.log(theme);
+
+Result:
+
+    {
+      color: "red",
+      classes: {
+        root: "root-123456",
       },
-      header: {
-        container: {
-          color: "#000",
-        },
-      },
-    });
+    }
 
-## Integrate with React
+### Integrate with React
+
 TODO
+
+## API
+
+TODO
+
+[npm version]: https://www.npmjs.com/package/react-jss-theme
+
+[npm version widget]: https://img.shields.io/npm/v/react-jss-theme.svg?style=flat-square
+
+[build status]: https://travis-ci.org/wikiwi/react-jss-theme
+
+[build status widget]: https://img.shields.io/travis/wikiwi/react-jss-theme/master.svg?style=flat-square
+
+[coverage status]: https://coveralls.io/github/wikiwi/react-jss-theme?branch=master
+
+[coverage status widget]: https://img.shields.io/coveralls/wikiwi/react-jss-theme/master.svg?style=flat-square
