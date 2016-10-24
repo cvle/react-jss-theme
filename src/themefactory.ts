@@ -7,7 +7,7 @@
 import { default as defaultJSS } from "jss";
 
 export type ThemeCallback<TThemeVars, TTheme> = (theme?: TThemeVars) => TTheme;
-export type ThemeFactory<TThemeVars, TTheme> = (theme: TThemeVars, jss?: JSS.JSS) => TTheme;
+export type ThemeFactory<TThemeVars, TTheme> = (vars: TThemeVars, jss?: JSS.JSS) => TTheme;
 
 let index = 0;
 
