@@ -16,27 +16,30 @@ npm install react-jss-theme --save
 
 ### Define a theme
 
-    const factory = createThemeFactory(
-      (vars) => ({
+```javascript
+const factory = createThemeFactory(
+  (vars) => ({
+    color: vars.color,
+    classes: {
+      root: {
         color: vars.color,
-        classes: {
-          root: {
-            color: vars.color,
-          },
-        },
-      }));
+      },
+    },
+  }));
 
-    const theme = factory({ color: "red" });
-    console.log(theme);
+const theme = factory({ color: "red" });
+console.log(theme);
+```
 
 Result:
-
-    {
-      color: "red",
-      classes: {
-        root: "root-123456",
-      },
-    }
+```javascript
+{
+  color: "red",
+  classes: {
+    root: "root-123456"
+  }
+}
+```
 
 ### Integrate with React
 
