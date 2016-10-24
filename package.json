@@ -1,6 +1,6 @@
 {
   "name": "react-jss-theme",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-beta",
   "description": "Theming solution for React based on JSS",
   "homepage": "https://github.com/wikiwi/react-jss-theme",
   "repository": {
