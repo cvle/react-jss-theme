@@ -51,9 +51,9 @@ describe("specifity", () => {
 
     describe("when creating themes from different factories", () => {
       before(() => {
-        factory[5](jss, themeVars);
-        factory[2](jss, themeVars);
-        factory[7](jss, themeVars);
+        factory[5](themeVars, jss);
+        factory[2](themeVars, jss);
+        factory[7](themeVars, jss);
       });
 
       describe("StyleSheets", () => {
@@ -79,9 +79,9 @@ describe("specifity", () => {
 
     describe("when creating themes from the same factory", () => {
       before(() => {
-        factory[5](jss, themeVars);
-        factory[5](jss, themeVars);
-        factory[5](jss, { color: "last" });
+        factory[5](themeVars, jss);
+        factory[5](themeVars, jss);
+        factory[5]({ color: "last" }, jss);
       });
 
       describe("StyleSheets", () => {

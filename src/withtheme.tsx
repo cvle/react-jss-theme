@@ -46,7 +46,7 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
         if (!jss) {
           return;
         }
-        const theme = themeFactory(jss, vars);
+        const theme = themeFactory(vars, jss);
         this.theme = theme;
       }
 

@@ -27,7 +27,7 @@ describe("withtheme.tsx", () => {
     type Theme = { color: string, classes?: { root: any }, jss?: any };
     type Props = { theme?: Theme };
     const themeVars = { color: "blue" };
-    const factory: ThemeFactory<ThemeVars, Theme> = (jss, vars) => ({
+    const factory: ThemeFactory<ThemeVars, Theme> = (vars, jss) => ({
       color: vars.color,
       classes: {
         root: "root",

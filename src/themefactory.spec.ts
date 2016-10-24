@@ -26,10 +26,10 @@ describe("themefactory.ts", () => {
 
   describe("createThemeFactory()", () => {
     it("should subsequently return stylesheet with ascending index when not specified", () => {
-      createThemeFactory(() => ({}))(jss, {});
-      createThemeFactory(() => ({}), { index: 100 })(jss, {});
-      createThemeFactory(() => ({}))(jss, {});
-      createThemeFactory(() => ({}))(jss, {});
+      createThemeFactory(() => ({}))({}, jss);
+      createThemeFactory(() => ({}), { index: 100 })({}, jss);
+      createThemeFactory(() => ({}))({}, jss);
+      createThemeFactory(() => ({}))({}, jss);
       const idx: number[] = [];
       for (let i = 0; i < 4; i++) {
         idx[i] = createStyleSheet.getCall(i).args[1].index;
@@ -59,19 +59,19 @@ describe("themefactory.ts", () => {
     });
 
     it("should attach stylesheet", () => {
-      factory(jss, {});
+      factory({}, jss);
       assert.equal(attach.callCount, 1);
     });
 
     it("should return theme", () => {
       const red = "red";
-      const theme = factory(jss, { color: red });
+      const theme = factory({ color: red }, jss);
       assert.equal(theme.primaryColor, red);
       assert.strictEqual(theme.classes.root, "stub");
     });
 
     it("should pass options to StyleSheet", () => {
-      factory(jss, {});
+      factory({}, jss);
       const { meta } = createStyleSheet.getCall(0).args[1];
       assert.equal(meta, "test");
     });

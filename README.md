@@ -17,7 +17,6 @@ npm install react-jss-theme --save
 ### Define a theme
 
 ```javascript
-import jss from "jss";
 import { createThemeFactory } from "react-jss-theme";
 
 const factory = createThemeFactory(
@@ -30,7 +29,7 @@ const factory = createThemeFactory(
     },
   }));
 
-const theme = factory(jss, { color: "red" });
+const theme = factory({ color: "red" });
 console.log(theme);
 ```
 

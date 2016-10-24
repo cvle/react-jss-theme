@@ -4,9 +4,10 @@
  * This software may be modified and distributed under the terms
  * of the MIT license. See the LICENSE file for details.
  */
+import { default as defaultJSS } from "jss";
 
 export type ThemeCallback<TThemeVars, TTheme> = (theme?: TThemeVars) => TTheme;
-export type ThemeFactory<TThemeVars, TTheme> = (jss: JSS.JSS, theme: TThemeVars) => TTheme;
+export type ThemeFactory<TThemeVars, TTheme> = (theme: TThemeVars, jss?: JSS.JSS) => TTheme;
 
 let index = 0;
 
@@ -18,7 +19,7 @@ export function createThemeFactory<TThemeVars, TTheme>(
     index++;
     options.index = index;
   }
-  return (jss: JSS.JSS, vars: TThemeVars) => {
+  return (vars: TThemeVars, jss: JSS.JSS = defaultJSS) => {
     const theme: any = callback(vars);
     const sheet = jss.createStyleSheet(theme.classes, options);
     sheet.attach();
