@@ -17,6 +17,8 @@ npm install react-jss-theme --save
 ### Define a theme
 
 ```javascript
+import { createThemeFactory } from "react-jss-theme";
+
 const factory = createThemeFactory(
   (vars) => ({
     color: vars.color,
