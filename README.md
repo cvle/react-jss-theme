@@ -1,6 +1,9 @@
 # react-jss-theme
 
-Theming solution for React based on JSS.
+Theming solution for React based on JSS that follows the idea of
+[future-react-ui](https://github.com/nikgraf/future-react-ui) and
+[theme-standard](https://github.com/theme-standard/spec). In fact
+you can implement the theme-standard spec using this solution.
 
 [![NPM Version Widget]][npm version]
 [![Build Status Widget]][build status]
@@ -14,42 +17,40 @@ npm install react-jss-theme --save
 
 ## Usage
 
-### Define a theme
-
 ```javascript
-import { createThemeFactory } from "react-jss-theme";
+import { createThemeFactory, withTheme, ThemeContextProvider } from "react-jss-theme";
 
-const factory = createThemeFactory(
+const themeFactory = createThemeFactory(
   (vars) => ({
     color: vars.color,
     classes: {
-      root: {
-        color: vars.color,
+      button: {
+        backgroundColor: vars.color,
+      },
+      label: {
+        fontWeight: "bold",
       },
     },
   }));
 
-const theme = factory({ color: "red" });
-console.log(theme);
+const RawButton = ({ theme: { color, classes }, children }) => (
+  <button className={ classes.button } data-color={ color }>
+    <span className={ classes.label }>
+      {children}
+    </span>
+  </button>
+)
+
+const Button = withTheme(themeFactory)(Button)
+
+const App = () => (
+  <ThemeContextProvider themeVars={ color: "red" }>
+    <Button>Hello</Button>
+  </ThemeContextProvider>
+)
+
+ReactDOM.render(<App />, mountNode);
 ```
-
-Result:
-```javascript
-{
-  color: "red",
-  classes: {
-    root: "root-123456"
-  }
-}
-```
-
-### Integrate with React
-
-TODO
-
-## API
-
-TODO
 
 [npm version]: https://www.npmjs.com/package/react-jss-theme
 
