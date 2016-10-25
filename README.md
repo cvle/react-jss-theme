@@ -1,6 +1,6 @@
 # react-jss-theme
 
-Theming solution for React based on JSS that follows the idea of
+Theming solution for React based on JSS that follows the ideas of
 [future-react-ui](https://github.com/nikgraf/future-react-ui) and
 [theme-standard](https://github.com/theme-standard/spec). In fact
 you can implement the theme-standard spec using this solution.
@@ -18,19 +18,19 @@ npm install react-jss-theme --save
 ## Usage
 
 ```javascript
-import { createThemeFactory, withTheme, ThemeContextProvider } from "react-jss-theme";
+import { createThemeFactory, withTheme, ThemeContextProvider } from "react-jss-theme"
 
 const themeFactory = createThemeFactory(
   (vars) => ({
     color: vars.color,
     classes: {
       button: {
-        backgroundColor: vars.color,
+        backgroundColor: vars.color
       },
       label: {
-        fontWeight: "bold",
-      },
-    },
+        fontWeight: "bold"
+      }
+    }
   }));
 
 const RawButton = ({ theme: { color, classes }, children }) => (
@@ -44,13 +44,55 @@ const RawButton = ({ theme: { color, classes }, children }) => (
 const Button = withTheme(themeFactory)(Button)
 
 const App = () => (
-  <ThemeContextProvider themeVars={ color: "red" }>
+  <ThemeContextProvider themeVars={{ color: "red" }}>
     <Button>Hello</Button>
   </ThemeContextProvider>
 )
 
-ReactDOM.render(<App />, mountNode);
+ReactDOM.render(<App />, mountNode)
 ```
+
+### With decorator syntax
+
+```javascript
+@withTheme(themeFactory)
+const Button = ({ theme: { color, classes }, children }) => (
+  <button className={ classes.button } data-color={ color }>
+    <span className={ classes.label }>
+      {children}
+    </span>
+  </button>
+)
+```
+
+### Passing a custom JSS instance
+
+```javascript
+const App = () => (
+  <ThemeContextProvider themeVars={ myThemeVars } jss={ myCustomJSS }>
+    <Button>Hello</Button>
+  </ThemeContextProvider>
+)
+```
+
+### Passing style sheet options
+
+```javascript
+const themeFactory = createThemeFactory(
+  (vars) => ({
+    color: vars.color,
+    classes: {
+      button: {
+        backgroundColor: vars.color
+      },
+      label: {
+        fontWeight: "bold"
+      }
+    }
+  }), { meta: "my-button-theme" });
+```
+
+For all available options consult the [JSS API Documentation](https://github.com/cssinjs/jss/blob/master/docs/js-api.md#create-style-sheet-with-namespaces-enabled).
 
 [npm version]: https://www.npmjs.com/package/react-jss-theme
 
