@@ -67,13 +67,6 @@ describe("basic usage", () => {
         assert.strictEqual(`.${theme.classes.root}`, selectorText,
           "StyleSheet selectors and theme.classes must match");
       });
-
-      it("should use default JSS if not specified", () => {
-        const themeWithDefaultJSS = factory(themeVars);
-        const styleElements = dom.document.querySelectorAll("style");
-        assert.lengthOf(styleElements, 2, "DOM must have 2 style elements");
-        assert.strictEqual(themeWithDefaultJSS.classes.root, theme.classes.root);
-      });
     });
   });
 });
