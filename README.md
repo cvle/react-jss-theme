@@ -3,7 +3,7 @@
 Theming solution for React based on JSS that follows the ideas of
 [future-react-ui](https://github.com/nikgraf/future-react-ui) and
 [theme-standard](https://github.com/theme-standard/spec). In fact
-you can implement the theme-standard spec using this solution.
+you can implement the proposed theme-standard spec using this solution.
 
 [![NPM Version Widget]][npm version]
 [![Build Status Widget]][build status]
@@ -54,6 +54,9 @@ ReactDOM.render(<App />, mountNode)
 
 ### With decorator syntax
 
+You can use ES7 with [decorators](https://github.com/wycats/javascript-decorators) (using [babel-plugin-transform-decorators-legacy](https://github.com/loganfsmyth/babel-plugin-transform-decorators-legacy)).
+
+
 ```javascript
 @withTheme(themeFactory)
 const Button = ({ theme: { color, classes }, children }) => (
@@ -66,6 +69,10 @@ const Button = ({ theme: { color, classes }, children }) => (
 ```
 
 ### Customize component theme
+
+Components wrapped with the `withTheme` decorator, accepts a `theme` attribute
+which merges with the component theme. Class names are never overwritten
+but appended to the existing ones.
 
  ```javascript
 const customThemeFactory = createThemeFactory(
@@ -88,11 +95,10 @@ const CustomButton = ({ theme, children }) => (
 
 ```
 
-Components wrapped with the `withTheme` decorator, accepts a `theme` attribute
-which merges with the component theme. Class names are never overwritten
-but appended to the existing ones.
-
 ### Passing a custom JSS instance
+
+You can pass a custom JSS instance to the `ThemeContextProvider`
+instead of the default one.
 
 ```javascript
 const App = () => (
@@ -103,6 +109,9 @@ const App = () => (
 ```
 
 ### Passing style sheet options
+
+You can pass style sheet options to `createThemeFactory`.
+For all available options consult the [JSS API Documentation](https://github.com/cssinjs/jss/blob/master/docs/js-api.md#create-style-sheet-with-namespaces-enabled).
 
 ```javascript
 const themeFactory = createThemeFactory(
@@ -119,7 +128,6 @@ const themeFactory = createThemeFactory(
   }), { meta: "my-button-theme" })
 ```
 
-For all available options consult the [JSS API Documentation](https://github.com/cssinjs/jss/blob/master/docs/js-api.md#create-style-sheet-with-namespaces-enabled).
 
 [npm version]: https://www.npmjs.com/package/react-jss-theme
 
