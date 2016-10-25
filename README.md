@@ -67,12 +67,8 @@ const Button = ({ theme: { color, classes }, children }) => (
 
 ### Customize component theme
 
-Components wrapped with the `withTheme` decorator, accepts a `theme` attribute,
-which merges with the component theme. Class names are never overwritten
-but appended to the existing ones.
-
  ```javascript
-const themeFactory = createThemeFactory(
+const customThemeFactory = createThemeFactory(
   (vars) => ({
     color: "blue",
     classes: {
@@ -85,12 +81,16 @@ const themeFactory = createThemeFactory(
     }
   }))
 
-@withTheme(themeFactory)
+@withTheme(customThemeFactory)
 const CustomButton = ({ theme, children }) => (
   <Button theme={ theme }>{ children }</Button>
 )
 
 ```
+
+Components wrapped with the `withTheme` decorator, accepts a `theme` attribute
+which merges with the component theme. Class names are never overwritten
+but appended to the existing ones.
 
 ### Passing a custom JSS instance
 
