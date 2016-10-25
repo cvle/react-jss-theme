@@ -31,7 +31,7 @@ const themeFactory = createThemeFactory(
         fontWeight: "bold"
       }
     }
-  }));
+  }))
 
 const RawButton = ({ theme: { color, classes }, children }) => (
   <button className={ classes.button } data-color={ color }>
@@ -65,6 +65,33 @@ const Button = ({ theme: { color, classes }, children }) => (
 )
 ```
 
+### Customize component theme
+
+Components wrapped with the `withTheme` decorator, accepts a `theme` attribute,
+which merges with the component theme. Class names are never overwritten
+but appended to the existing ones.
+
+ ```javascript
+const themeFactory = createThemeFactory(
+  (vars) => ({
+    color: "blue",
+    classes: {
+      button: {
+        backgroundColor: "blue"
+      },
+      label: {
+        fontWeight: "normal"
+      }
+    }
+  }))
+
+@withTheme(themeFactory)
+const CustomButton = ({ theme, children }) => (
+  <Button theme={ theme }>{ children }</Button>
+)
+
+```
+
 ### Passing a custom JSS instance
 
 ```javascript
@@ -89,7 +116,7 @@ const themeFactory = createThemeFactory(
         fontWeight: "bold"
       }
     }
-  }), { meta: "my-button-theme" });
+  }), { meta: "my-button-theme" })
 ```
 
 For all available options consult the [JSS API Documentation](https://github.com/cssinjs/jss/blob/master/docs/js-api.md#create-style-sheet-with-namespaces-enabled).
