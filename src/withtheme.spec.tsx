@@ -24,13 +24,17 @@ describe("withtheme.tsx", () => {
 
   describe("withTheme", () => {
     type ThemeVars = { color: string };
-    type Theme = { color: string, classes?: { root: any }, jss?: any };
+    type Theme = { color: string, classes?: { root: any }, deep?: { value1?: number, value2?: number }, jss?: any };
     type Props = { theme?: Theme };
     const themeVars = { color: "blue" };
     const factory: ThemeFactory<ThemeVars, Theme> = (vars, jss) => ({
       color: vars.color,
       classes: {
         root: "root",
+      },
+      deep: {
+        value1: 1,
+        value2: 2
       },
       jss,
     });
@@ -51,7 +55,7 @@ describe("withtheme.tsx", () => {
 
     it("should inject theme", () => {
       const { theme } = getWrapper().props();
-      assert.equal(theme.color, themeVars.color);
+      assert.strictEqual(theme.color, themeVars.color);
     });
 
     describe("custom theme", () => {
@@ -64,8 +68,8 @@ describe("withtheme.tsx", () => {
         };
         const wrapper = getWrapper({ theme: customTheme });
         const { theme } = wrapper.props();
-        assert.equal(theme.color, "custom");
-        assert.equal(theme.classes.root, "root custom");
+        assert.strictEqual(theme.color, "custom");
+        assert.strictEqual(theme.classes.root, "root custom");
       });
       it("should merge custom theme when changing props", () => {
         const customTheme = {
@@ -73,12 +77,17 @@ describe("withtheme.tsx", () => {
           classes: {
             root: "custom",
           },
+          deep: {
+            value2: 0,
+          },
         };
         const wrapper = getWrapper();
         wrapper.setProps({ theme: customTheme });
         const { theme } = wrapper.props();
-        assert.equal(theme.color, "custom");
-        assert.equal(theme.classes.root, "root custom");
+        assert.strictEqual(theme.color, "custom");
+        assert.strictEqual(theme.classes.root, "root custom");
+        assert.strictEqual(theme.deep.value1, 1);
+        assert.strictEqual(theme.deep.value2, 0);
       });
     });
   });

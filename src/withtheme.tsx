@@ -7,6 +7,7 @@
 
 import * as React from "react";
 import * as objectAssign from "object-assign";
+import * as deepExtend from "deep-extend";
 import { ThemeFactory } from "./themefactory";
 import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
@@ -59,19 +60,20 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
       private getTheme(): any {
         const theme = objectAssign({}, this.theme);
         if (this.props.theme) {
-          for (const attr in this.props.theme) {
-            if (attr === "classes") {
-              const classes: { [className: string]: string } = this.props.theme[attr];
-              for (const key in classes) {
-                if (theme.classes[key] === undefined) {
-                  theme.classes[key] = classes[key];
-                  continue;
-                }
-                theme.classes[key] += " " + classes[key];
+          const customTheme = objectAssign({}, this.props.theme);
+          delete customTheme.classes;
+          deepExtend(theme, customTheme);
+
+          // classes gets appended instead of overwritten.
+          const classes: { [className: string]: string } = this.props.theme.classes;
+          if (classes) {
+            for (const key in classes) {
+              if (theme.classes[key] === undefined) {
+                theme.classes[key] = classes[key];
+                continue;
               }
-              continue;
+              theme.classes[key] += " " + classes[key];
             }
-            theme[attr] = this.props.theme[attr];
           }
         }
         return theme;
