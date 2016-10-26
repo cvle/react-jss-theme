@@ -64,7 +64,7 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
           delete customTheme.classes;
           deepExtend(theme, customTheme);
 
-          // classes gets appended instead of overwritten.
+          // classes get appended instead of overwritten.
           const classes: { [className: string]: string } = this.props.theme.classes;
           if (classes) {
             for (const key in classes) {
