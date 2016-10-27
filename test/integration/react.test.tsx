@@ -54,12 +54,12 @@ describe("react integration", () => {
 
     it("should render RawButton", () => {
       rawButtonWrapper = wrapper.find(RawButton);
-      assert.lengthOf(rawButtonWrapper, 1);
+      assert.lengthOf(rawButtonWrapper, 1, "must render a RawButton component");
     });
 
     it("should render HTML button", () => {
       htmlButtonWrapper = wrapper.find("button");
-      assert.lengthOf(htmlButtonWrapper, 1);
+      assert.lengthOf(htmlButtonWrapper, 1, "must render a button component");
     });
 
     it("should attach StyleSheet to the DOM", () => {

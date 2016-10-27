@@ -50,12 +50,14 @@ describe("withtheme.tsx", () => {
 
     it("should pass JSS to ThemeFactory", () => {
       const { theme } = getWrapper().props();
-      assert.strictEqual(theme.jss, jss);
+      assert.strictEqual(theme.jss, jss,
+        "jss instance was not passed to ThemeFactory");
     });
 
     it("should inject theme", () => {
       const { theme } = getWrapper().props();
-      assert.strictEqual(theme.color, themeVars.color);
+      assert.strictEqual(theme.color, themeVars.color,
+        "incorrect theme");
     });
 
     describe("custom theme", () => {
@@ -65,11 +67,20 @@ describe("withtheme.tsx", () => {
           classes: {
             root: "custom",
           },
+          deep: {
+            value2: 0,
+          },
         };
         const wrapper = getWrapper({ theme: customTheme });
         const { theme } = wrapper.props();
-        assert.strictEqual(theme.color, "custom");
-        assert.strictEqual(theme.classes.root, "root custom");
+        assert.strictEqual(theme.color, "custom",
+          "theme options must be overridden");
+        assert.strictEqual(theme.classes.root, "root custom",
+          "class names must be appened");
+        assert.strictEqual(theme.deep.value1, 1,
+          "incorrect deep merge");
+        assert.strictEqual(theme.deep.value2, 0,
+          "incorrect deep merge");
       });
       it("should merge custom theme when changing props", () => {
         const customTheme = {
@@ -77,17 +88,14 @@ describe("withtheme.tsx", () => {
           classes: {
             root: "custom",
           },
-          deep: {
-            value2: 0,
-          },
         };
         const wrapper = getWrapper();
         wrapper.setProps({ theme: customTheme });
         const { theme } = wrapper.props();
-        assert.strictEqual(theme.color, "custom");
-        assert.strictEqual(theme.classes.root, "root custom");
-        assert.strictEqual(theme.deep.value1, 1);
-        assert.strictEqual(theme.deep.value2, 0);
+        assert.strictEqual(theme.color, "custom",
+          "theme options must be overridden");
+        assert.strictEqual(theme.classes.root, "root custom",
+          "class names must be appened");
       });
     });
   });

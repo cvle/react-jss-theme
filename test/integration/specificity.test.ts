@@ -72,7 +72,8 @@ describe("specifity", () => {
             styleElements.item(1).getAttribute("data-meta"),
             styleElements.item(2).getAttribute("data-meta"),
           ];
-          assert.deepEqual(factoryIDs, ["2", "5", "7"]);
+          assert.deepEqual(factoryIDs, ["2", "5", "7"],
+            "must match factory creation order");
         });
       });
     });
@@ -101,7 +102,8 @@ describe("specifity", () => {
             styleElements.item(3).getAttribute("data-meta"),
             styleElements.item(4).getAttribute("data-meta"),
           ];
-          assert.deepEqual(factoryIDs, ["5", "5", "5", "5"]);
+          assert.deepEqual(factoryIDs, ["5", "5", "5", "5"],
+            "must match expected order");
           const sheet: any = styleElements.item(4).sheet;
           const rules = sheet.cssRules[0];
           assert.strictEqual(rules.style.color, "last",

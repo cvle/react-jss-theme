@@ -34,9 +34,12 @@ describe("themefactory.ts", () => {
       for (let i = 0; i < 4; i++) {
         idx[i] = createStyleSheet.getCall(i).args[1].index;
       }
-      assert.equal(idx[1], 100);
-      assert.isTrue(idx[2] > idx[0]);
-      assert.isTrue(idx[3] > idx[2]);
+      assert.equal(idx[1], 100,
+        "custom index must remain");
+      assert.isTrue(idx[2] > idx[0],
+        "index must be ascending");
+      assert.isTrue(idx[3] > idx[2],
+        "index must be ascending");
     });
   });
 
@@ -58,22 +61,24 @@ describe("themefactory.ts", () => {
       );
     });
 
-    it("should attach stylesheet", () => {
+    it("should attach style sheet", () => {
       factory({}, jss);
-      assert.equal(attach.callCount, 1);
+      assert.equal(attach.callCount, 1,
+        "style sheet was not attached");
     });
 
     it("should return theme", () => {
       const red = "red";
       const theme = factory({ color: red }, jss);
-      assert.equal(theme.primaryColor, red);
-      assert.strictEqual(theme.classes.root, "stub");
+      assert.equal(theme.primaryColor, red, "incorrect theme");
+      assert.strictEqual(theme.classes.root, "stub", "incorrect theme");
     });
 
-    it("should pass options to StyleSheet", () => {
+    it("should pass options to style sheet", () => {
       factory({}, jss);
       const { meta } = createStyleSheet.getCall(0).args[1];
-      assert.equal(meta, "test");
+      assert.equal(meta, "test",
+        "options was not passed to style sheet");
     });
   });
 });
