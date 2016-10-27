@@ -41,7 +41,7 @@ const RawButton = ({ theme: { color, classes }, children }) => (
   </button>
 )
 
-const Button = withTheme(themeFactory)(Button)
+const Button = withTheme(themeFactory)(RawButton)
 
 const App = () => (
   <ThemeContextProvider themeVars={{ color: "red" }}>
