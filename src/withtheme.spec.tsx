@@ -18,7 +18,8 @@ describe("withtheme.tsx", () => {
         theme: null,
       };
       removeThemeAttributes(attrs);
-      assert.isUndefined(attrs.theme);
+      assert.isUndefined(attrs.theme,
+        "theme attributes were not removed");
     });
   });
 
