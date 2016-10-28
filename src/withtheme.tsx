@@ -11,17 +11,9 @@ import * as deepExtend from "deep-extend";
 import { ThemeFactory } from "./themefactory";
 import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
-export interface ThemeOuterAttributes<TTheme> {
+export interface ThemeAttributes<TTheme> {
   theme?: TTheme;
 }
-
-export interface ThemeInnerAttributes<TTheme> {
-  theme?: TTheme;
-}
-
-export interface ThemeAttributes<TTheme> extends
-  ThemeOuterAttributes<TTheme>,
-  ThemeInnerAttributes<TTheme> { }
 
 export function removeThemeAttributes(attributes: ThemeAttributes<any>): void {
   delete attributes.theme;
