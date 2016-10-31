@@ -20,7 +20,7 @@ export interface ThemeContextProviderProps<TThemeVars> {
 }
 
 export class GenericThemeContextProvider<TThemeVars> extends
-  React.PureComponent<ThemeContextProviderProps<TThemeVars>, {}> {
+  React.Component<ThemeContextProviderProps<TThemeVars>, {}> {
   public static childContextTypes: any = {
     themeVars: React.PropTypes.object,
     jss: React.PropTypes.object.isRequired,

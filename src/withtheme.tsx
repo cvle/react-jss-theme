@@ -22,7 +22,7 @@ export function removeThemeAttributes(attributes: ThemeAttributes<any>): void {
 export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>):
   (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps> {
   return (TargetComponent: React.ComponentClass<TProps>) => {
-    return class WithTheme extends React.PureComponent<TProps, void> {
+    const enhanced = class WithTheme extends React.PureComponent<TProps, void> {
       public static contextTypes: any = ThemeContextProvider.childContextTypes;
 
       public context: ThemeContext<any>;
@@ -71,5 +71,11 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
         return theme;
       }
     };
+
+    // Export impure version, except for testing.
+    if (process.env.NODE_ENV !== "test") {
+      (enhanced.prototype as any).shouldComponentUpdate = () => true;
+    }
+    return enhanced;
   };
 }
