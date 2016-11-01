@@ -11,9 +11,9 @@ import * as deepExtend from "deep-extend";
 import { ThemeFactory } from "./themefactory";
 import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
-type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps>;
+export type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps>;
 
-interface WithThemeOptions {
+export interface WithThemeOptions {
   pure?: boolean;
 }
 

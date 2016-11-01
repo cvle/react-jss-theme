@@ -6,8 +6,9 @@
  */
 
 import * as createHash from "murmurhash-js/murmurhash3_gc";
+import { Rule } from "jss";
 
-export function generateClassName(str: string, rule: JSS.Rule): string {
+export function generateClassName(str: string, rule: Rule): string {
   if (rule.name) {
     const dashedRuleName = rule.name.replace(/([a-z])([A-Z])/g, "$1-$2").toLowerCase();
     if (rule.options.sheet) {

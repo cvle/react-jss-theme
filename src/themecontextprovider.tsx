@@ -7,16 +7,16 @@
 
 import * as React from "react";
 import jssPreset from "jss-preset-default";
-import { create as createJSS } from "jss";
+import { create as createJSS, JSS } from "jss";
 
 export interface ThemeContext<TThemeVars> {
   themeVars?: TThemeVars;
-  jss?: JSS.JSS;
+  jss?: JSS;
 }
 
 export interface ThemeContextProviderProps<TThemeVars> {
   themeVars?: TThemeVars;
-  jss?: JSS.JSS;
+  jss?: JSS;
 }
 
 export class GenericThemeContextProvider<TThemeVars> extends
@@ -27,7 +27,7 @@ export class GenericThemeContextProvider<TThemeVars> extends
   };
 
   private themeVars: TThemeVars;
-  private jss: JSS.JSS;
+  private jss: JSS;
 
   constructor(props: ThemeContextProviderProps<TThemeVars>) {
     super(props);
