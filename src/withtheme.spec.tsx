@@ -43,7 +43,7 @@ describe("withtheme.tsx", () => {
     let getWrapper: (props?: ThemeAttributes<Theme>) => ShallowWrapper<ThemeAttributes<Theme>, {}>;
 
     beforeEach(() => {
-      const Themed = withTheme<Props>(factory, { pure: true })((props) => (
+      const Themed = withTheme<Props>(factory)((props) => (
         <div>{props.theme.color}</div>
       ));
       getWrapper = (props?) => shallow(<Themed {...props} />, { context: { jss, themeVars } });

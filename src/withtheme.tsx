@@ -13,14 +13,6 @@ import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
 export type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps>;
 
-export interface WithThemeOptions {
-  pure?: boolean;
-}
-
-const defaultOptions: WithThemeOptions = {
-  pure: false,
-};
-
 export interface ThemeAttributes<TTheme> {
   theme?: TTheme;
 }
@@ -49,11 +41,9 @@ function mergeTheme(a: any, b: any): any {
   return theme;
 }
 
-export function withTheme<TProps extends ThemeAttributes<any>>(
-  themeFactory: ThemeFactory<any, any>,
-  options = defaultOptions): Decorator<TProps> {
+export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>): Decorator<TProps> {
   return (TargetComponent: React.ComponentClass<TProps>) => {
-    const enhanced = class WithTheme extends React.PureComponent<TProps, void> {
+    const enhanced = class WithTheme extends React.Component<TProps, void> {
       public static contextTypes: any = ThemeContextProvider.childContextTypes;
 
       public context: ThemeContext<any>;
@@ -87,10 +77,6 @@ export function withTheme<TProps extends ThemeAttributes<any>>(
         return <TargetComponent {...this.props} theme={this.computedTheme} />;
       }
     };
-
-    if (!options.pure) {
-      (enhanced.prototype as any).shouldComponentUpdate = () => true;
-    }
 
     return enhanced;
   };

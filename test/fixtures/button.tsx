@@ -45,4 +45,4 @@ export class RawButton extends React.PureComponent<ButtonProps, {}> {
   }
 }
 
-export const Button = withTheme(themeFactory, { pure: true })(RawButton);
+export const Button = withTheme(themeFactory)(RawButton);
