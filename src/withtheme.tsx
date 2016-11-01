@@ -19,6 +19,26 @@ export function removeThemeAttributes(attributes: ThemeAttributes<any>): void {
   delete attributes.theme;
 }
 
+function mergeTheme(a: any, b: any): any {
+  const theme = objectAssign({}, a);
+  const customTheme = objectAssign({}, b);
+  delete customTheme.classes;
+  deepExtend(theme, customTheme);
+
+  // classes get appended instead of overwritten.
+  const classes: { [className: string]: string } = b.classes;
+  if (classes) {
+    for (const key in classes) {
+      if (theme.classes[key] === undefined) {
+        theme.classes[key] = classes[key];
+        continue;
+      }
+      theme.classes[key] += " " + classes[key];
+    }
+  }
+  return theme;
+}
+
 export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>):
   (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps> {
   return (TargetComponent: React.ComponentClass<TProps>) => {
@@ -26,8 +46,8 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
       public static contextTypes: any = ThemeContextProvider.childContextTypes;
 
       public context: ThemeContext<any>;
-
       private theme: any;
+      private computedTheme: any;
 
       constructor(props: TProps) {
         super(props);
@@ -39,36 +59,21 @@ export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: The
         if (!jss) {
           return;
         }
+        const customTheme = this.props.theme;
         const theme = themeFactory(vars, jss);
         this.theme = theme;
+        this.computedTheme = customTheme ? mergeTheme(theme, customTheme) : theme;
+      }
+
+      public componentWillReceiveProps(nextProps: TProps): void {
+        if (this.props.theme !== nextProps.theme) {
+          const customTheme = nextProps.theme;
+          this.computedTheme = customTheme ? mergeTheme(this.theme, customTheme) : this.theme;
+        }
       }
 
       public render(): React.ReactElement<any> {
-        const props: TProps = objectAssign({}, this.props);
-        props.theme = this.getTheme();
-        return <TargetComponent {...props} />;
-      }
-
-      private getTheme(): any {
-        const theme = objectAssign({}, this.theme);
-        if (this.props.theme) {
-          const customTheme = objectAssign({}, this.props.theme);
-          delete customTheme.classes;
-          deepExtend(theme, customTheme);
-
-          // classes get appended instead of overwritten.
-          const classes: { [className: string]: string } = this.props.theme.classes;
-          if (classes) {
-            for (const key in classes) {
-              if (theme.classes[key] === undefined) {
-                theme.classes[key] = classes[key];
-                continue;
-              }
-              theme.classes[key] += " " + classes[key];
-            }
-          }
-        }
-        return theme;
+        return <TargetComponent {...this.props} theme={this.computedTheme} />;
       }
     };
 
