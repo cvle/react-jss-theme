@@ -11,6 +11,8 @@ import * as deepExtend from "deep-extend";
 import { ThemeFactory } from "./themefactory";
 import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
+type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps>;
+
 export interface ThemeAttributes<TTheme> {
   theme?: TTheme;
 }
@@ -39,8 +41,7 @@ function mergeTheme(a: any, b: any): any {
   return theme;
 }
 
-export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>):
-  (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps> {
+export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>): Decorator<TProps> {
   return (TargetComponent: React.ComponentClass<TProps>) => {
     const enhanced = class WithTheme extends React.PureComponent<TProps, void> {
       public static contextTypes: any = ThemeContextProvider.childContextTypes;
