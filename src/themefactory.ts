@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright (C) 2016 Chi Vinh Le and contributors.
  *
  * This software may be modified and distributed under the terms
@@ -14,7 +15,7 @@ let index = 0;
 
 export function createThemeFactory<TThemeVars, TTheme>(
   callback: ThemeCallback<TThemeVars, TTheme>,
-  options: StyleSheetOptions = {}
+  options: StyleSheetOptions = {},
 ): ThemeFactory<TThemeVars, TTheme> {
   if (options.index === undefined) {
     index++;

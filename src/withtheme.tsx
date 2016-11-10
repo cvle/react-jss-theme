@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright (C) 2016 Chi Vinh Le and contributors.
  *
  * This software may be modified and distributed under the terms
@@ -11,7 +12,8 @@ import * as deepExtend from "deep-extend";
 import { ThemeFactory } from "./themefactory";
 import { ThemeContext, ThemeContextProvider } from "./themecontextprovider";
 
-export type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) => React.ComponentClass<TProps>;
+export type Decorator<TProps> = (target: React.ComponentClass<TProps> | React.StatelessComponent<TProps>) =>
+  React.ComponentClass<TProps>;
 
 export interface ThemeAttributes<TTheme> {
   theme?: TTheme;
@@ -41,7 +43,8 @@ function mergeTheme(a: any, b: any): any {
   return theme;
 }
 
-export function withTheme<TProps extends ThemeAttributes<any>>(themeFactory: ThemeFactory<any, any>): Decorator<TProps> {
+export function withTheme<TProps extends ThemeAttributes<any>>(
+  themeFactory: ThemeFactory<any, any>): Decorator<TProps> {
   return (TargetComponent: React.ComponentClass<TProps>) => {
     const enhanced = class WithTheme extends React.Component<TProps, void> {
       public static contextTypes: any = ThemeContextProvider.childContextTypes;

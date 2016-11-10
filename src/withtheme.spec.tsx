@@ -1,4 +1,5 @@
-/*
+/**
+ * @license
  * Copyright (C) 2016 Chi Vinh Le and contributors.
  *
  * This software may be modified and distributed under the terms
@@ -35,7 +36,7 @@ describe("withtheme.tsx", () => {
       },
       deep: {
         value1: 1,
-        value2: 2
+        value2: 2,
       },
       jss,
     });
