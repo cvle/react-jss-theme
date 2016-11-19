@@ -7,13 +7,13 @@
  */
 
 import { assert } from "chai";
-import { stub } from "sinon";
+import { stub, SinonStub } from "sinon";
 import { createThemeFactory, ThemeFactory } from "./themefactory";
 
 describe("themefactory.ts", () => {
   let jss: JSS.JSS;
-  let attach: Sinon.SinonStub;
-  let createStyleSheet: Sinon.SinonStub;
+  let attach: SinonStub;
+  let createStyleSheet: SinonStub;
   const classes = { root: "stub" };
 
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe("themefactory.ts", () => {
               color: vars.color,
             },
           },
-        }), { meta: "test" }
+        }), { meta: "test" },
       );
     });
 
